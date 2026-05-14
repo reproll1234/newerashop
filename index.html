@@ -7,141 +7,473 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #0a0510; --card-bg: rgba(15, 10, 25, 0.6); 
-            --accent-cyan: #00ffff; --accent-pink: #ff00ff; --accent-green: #00ff66;
-            --text-main: #ffffff; --text-muted: #a09eb0; --border-color: rgba(0, 255, 255, 0.3);
-            --btn-bg: rgba(20, 10, 35, 0.7); --glow-pink: 0 0 10px rgba(255, 0, 255, 0.5); --glow-cyan: 0 0 10px rgba(0, 255, 255, 0.5);
+            --bg-dark: #0a0510; 
+            --card-bg: rgba(15, 10, 25, 0.6); 
+            --accent-cyan: #00ffff; 
+            --accent-pink: #ff00ff;
+            --accent-green: #00ff66;
+            --text-main: #ffffff; 
+            --text-muted: #a09eb0; 
+            --border-color: rgba(0, 255, 255, 0.3); 
+            --btn-bg: rgba(20, 10, 35, 0.7);
+            
+            --glow-pink: 0 0 10px rgba(255, 0, 255, 0.5);
+            --glow-cyan: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         * { box-sizing: border-box; }
+        
         body {
-            background-image: url('https://i.postimg.cc/bw2d9Fcm/3f732b59-0559-42b6-a475-7b2f8355a333.jpg');
+            background-image: url('https://i.postimg.cc/bw2d9Fcm/3f732b59-0559-42b6-a475-7b2f8355a333.jpg'); 
             background-size: cover; background-position: center; background-attachment: fixed;
             background-color: var(--bg-dark); color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0; padding: 0; padding-bottom: 100px; -webkit-tap-highlight-color: transparent;
+            margin: 0; padding: 0; padding-bottom: 100px;
+            -webkit-tap-highlight-color: transparent;
         }
-        .top-bar { background: rgba(10, 5, 15, 0.8); backdrop-filter: blur(10px); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,0,255,0.3); position: sticky; top: 0; z-index: 5000; box-shadow: var(--glow-pink); }
-        .top-balance .value { font-size: 18px; font-weight: bold; color: var(--accent-cyan); text-shadow: var(--glow-cyan); }
+
+        .top-bar { 
+            background: rgba(10, 5, 15, 0.8); backdrop-filter: blur(10px);
+            padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid rgba(255,0,255,0.3); position: sticky; top: 0; z-index: 5000; box-shadow: var(--glow-pink);
+        }
+        .top-balance .value { font-size: 18px; font-weight: bold; color: var(--accent-cyan); text-shadow: var(--glow-cyan); transition: 0.3s; }
         .app-title { font-weight: bold; font-size: 16px; color: var(--text-main); text-align: center; text-shadow: 0 0 8px var(--accent-pink); letter-spacing: 2px; }
-        .card { background: var(--card-bg); backdrop-filter: blur(8px); margin: 12px; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); box-shadow: var(--glow-cyan); }
+        
+        .card { 
+            background: var(--card-bg); backdrop-filter: blur(8px); margin: 12px; border-radius: 12px; padding: 15px; 
+            border: 1px solid var(--border-color); box-shadow: var(--glow-cyan);
+        }
         .section-title { font-size: 14px; margin: 15px 12px 5px 12px; color: var(--accent-pink); font-weight: bold; text-transform: uppercase; text-shadow: var(--glow-pink); }
-        .btn-primary { background: linear-gradient(90deg, #aa00ff, #00ffff); color: #000; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; }
-        .btn-menu { background: var(--btn-bg); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 15px; border-radius: 8px; width: 100%; margin-bottom: 12px; font-weight: bold; cursor: pointer; box-shadow: var(--glow-cyan); }
+
+        .btn-primary { 
+            background: linear-gradient(90deg, #aa00ff, #00ffff); color: #000; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4); transition: 0.2s;
+        }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { background: #555; box-shadow: none; color: #aaa; cursor: not-allowed; opacity: 0.5; }
+        
+        .btn-menu { 
+            background: var(--btn-bg); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 15px; border-radius: 8px; width: 100%; margin-bottom: 12px; font-weight: bold; cursor: pointer; box-shadow: var(--glow-cyan); backdrop-filter: blur(5px); transition: 0.3s;
+        }
+        .btn-menu:active { background: rgba(0,255,255,0.3); }
+
         .grid-container { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 12px 20px 12px; justify-content: center; }
-        .grid-btn { background: var(--btn-bg); border: 1px solid rgba(255,0,255,0.4); color: #fff; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; flex: 1 1 calc(45%); min-width: 120px; font-size: 13px; }
+        .grid-btn { 
+            background: var(--btn-bg); backdrop-filter: blur(5px); border: 1px solid rgba(255,0,255,0.4); color: #fff; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 13px; flex: 1 1 calc(50% - 10px); min-width: 140px; max-width: calc(50% - 5px); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); transition: 0.3s;
+        }
+        .grid-btn:active { background: rgba(255,0,255,0.3); box-shadow: var(--glow-pink); border-color: var(--accent-pink); }
+
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
-        .product-card { background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--glow-cyan); position: relative; }
-        .product-img img { width: 100%; height: 110px; object-fit: cover; }
-        .stock-badge { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 5px; font-size: 10px; font-weight: bold; border: 1px solid var(--accent-green); color: var(--accent-green); }
-        .product-info { padding: 8px; flex-grow: 1; }
-        .product-title { font-size: 13px; font-weight: bold; margin-bottom: 4px; color: #fff; }
-        .product-price { color: var(--accent-cyan); font-weight: bold; margin-bottom: 8px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 5, 15, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(0, 255, 255, 0.3); z-index: 6000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; cursor: pointer; flex: 1; }
-        .nav-item.active { color: var(--accent-cyan); }
+        .product-card { background: var(--card-bg); backdrop-filter: blur(8px); border-radius: 10px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--glow-cyan); position: relative; }
+        .product-img { position: relative; }
+        .product-img img { width: 100%; height: 110px; object-fit: cover; display: block; }
+        
+        .stock-badge { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 5px; font-size: 10px; font-weight: bold; border: 1px solid; }
+        .stock-good { color: var(--accent-green); border-color: var(--accent-green); box-shadow: 0 0 5px rgba(0,255,102,0.5); }
+        .stock-low { color: var(--accent-pink); border-color: var(--accent-pink); box-shadow: var(--glow-pink); }
+
+        .product-info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
+        .product-title { font-size: 13px; font-weight: bold; margin-bottom: 4px; color: #fff; text-shadow: 0 0 3px #000; }
+        .product-price { color: var(--accent-cyan); font-weight: bold; margin-bottom: 8px; text-shadow: var(--glow-cyan); }
+        .qty-controls { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); border-radius: 6px; margin-bottom: 8px; padding: 2px; border: 1px solid rgba(255,255,255,0.1); }
+        .qty-btn { background: none; border: none; color: var(--accent-cyan); font-size: 18px; padding: 5px 12px; cursor: pointer; text-shadow: var(--glow-cyan); }
+        .p-qty { color: #fff; font-weight: bold; }
+
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .cart-total { margin-top: 15px; font-size: 18px; font-weight: bold; text-align: right; color: var(--accent-cyan); text-shadow: var(--glow-cyan); }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 5, 15, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(0, 255, 255, 0.3); box-shadow: 0 -2px 15px rgba(0, 255, 255, 0.2); z-index: 6000;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-item.active { color: var(--accent-cyan); text-shadow: var(--glow-cyan); }
+        .nav-icon { font-size: 20px; margin-bottom: 3px; }
+
         .view-content { display: none; }
         .view-content.active { display: block; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .slot-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; }
-        .slot-box { background: rgba(0, 0, 0, 0.7); border: 2px solid var(--accent-cyan); border-radius: 10px; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 35px; }
+        .slot-box { background: rgba(0, 0, 0, 0.7); border: 2px solid var(--accent-cyan); border-radius: 10px; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: inset var(--glow-cyan); text-shadow: 0 0 10px #fff; }
+        
+        .coupon-btn { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; font-weight: bold; width: 100%; margin-bottom: 8px; cursor: pointer; transition: 0.3s; }
+        .cpn-cyan { border: 1px solid var(--accent-cyan); color: var(--accent-cyan); text-shadow: var(--glow-cyan); box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.2); }
+        .cpn-cyan:active { background: var(--accent-cyan); color: #000; text-shadow: none; }
+        .cpn-pink { border: 1px solid var(--accent-pink); color: var(--accent-pink); text-shadow: var(--glow-pink); box-shadow: inset 0 0 5px rgba(255, 0, 255, 0.2); }
+        .cpn-pink:active { background: var(--accent-pink); color: #000; text-shadow: none; }
+        .cpn-green { border: 1px solid var(--accent-green); color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,102,0.5); box-shadow: inset 0 0 5px rgba(0, 255, 102, 0.2); }
+        .cpn-green:active { background: var(--accent-green); color: #000; text-shadow: none; }
+
+        input[type="text"] { background: rgba(0,0,0,0.5); border: 1px solid var(--accent-pink); color: white; padding: 12px; border-radius: 8px; font-size: 14px; outline: none; width: 100%; box-shadow: inset var(--glow-pink); }
+        
+        .carousel {
+            position: relative; margin: 12px; border-radius: 12px; border: 1px solid var(--accent-cyan); 
+            box-shadow: var(--glow-cyan); overflow: hidden; background: var(--card-bg); height: 180px;
+        }
+        .carousel-track {
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; scrollbar-width: none; height: 100%;
+        }
+        .carousel-track::-webkit-scrollbar { display: none; }
+        .carousel-slide {
+            flex: 0 0 100%; min-width: 100%; height: 100%; position: relative; background-size: cover; 
+            background-position: center; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; text-align: center; padding: 15px; scroll-snap-align: center;
+        }
+        .carousel-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            background: linear-gradient(0deg, rgba(10,5,15,0.95) 0%, rgba(10,5,15,0.7) 100%); z-index: 1;
+        }
+        .carousel-text { position: relative; z-index: 2; color: #fff; font-size: 13px; font-weight: bold; line-height: 1.4; text-shadow: 0 0 5px #000; }
+        .carousel-dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 3; }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: var(--accent-cyan); box-shadow: var(--glow-cyan); width: 16px; border-radius: 4px; }
     </style>
 </head>
 <body>
+
     <div class="top-bar">
         <div class="top-balance">
-            <div style="font-size: 10px; color: var(--text-muted);">Egyenleg</div>
+            <div style="font-size: 10px; color: var(--text-muted);" data-i18n="top_balance">Balance</div>
             <div class="value" id="top-balance-display">0 HUF</div>
         </div>
-        <div style="text-align: center;">
-            <div class="app-title">NEW ERA SHOP</div>
-            <div class="app-subtitle" style="font-size: 11px;">Special's</div>
-        </div>
-        <button onclick="toggleLanguage()" style="background:none; border:1px solid var(--accent-pink); color:var(--accent-pink); border-radius:5px; padding:4px 10px;">HU/EN</button>
+        <div class="app-title">LEGITSHOP</div>
+        <button id="btn-lang" onclick="toggleLanguage()" style="background:none; border:1px solid var(--accent-pink); color:var(--accent-pink); border-radius:5px; padding:4px 10px; font-weight:bold; cursor:pointer; box-shadow: var(--glow-pink);">EN</button>
     </div>
 
     <div id="view-home" class="view-content active">
-        <div class="card" style="text-align: center; border-color: var(--accent-pink);">
-            <h3 style="margin: 0; color: var(--accent-cyan);">ÜDVÖZLÜNK!</h3>
-            <p style="font-size: 12px; color: var(--text-muted);">Update: 2026.03.23 - Készletek feltöltve!</p>
+        
+        <div class="carousel">
+            <div class="carousel-track" id="home-carousel">
+                <div class="carousel-slide" style="background-image: url('https://i.postimg.cc/bw2d9Fcm/3f732b59-0559-42b6-a475-7b2f8355a333.jpg');">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-text">
+                        <div style="font-size: 15px; margin-bottom: 8px; color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,102,0.5);" data-i18n="car_1_title">Update: 2026.03.23</div>
+                        <div style="font-weight: normal;" data-i18n="car_1_desc">Nyíregyháza<br>Miskolc<br>Győr<br>Kecskemét</div>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://i.postimg.cc/bw2d9Fcm/3f732b59-0559-42b6-a475-7b2f8355a333.jpg'); cursor: pointer;" onclick="navigateToTab('view-wallet')">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-text">
+                        <span data-i18n="car_2_title">Frissített útmutató az egyenleg feltöltéséhez</span><br><br>
+                        <span style="color: var(--accent-cyan); font-size: 12px; font-weight: normal; text-decoration: underline;" data-i18n="car_2_desc">Kattints erre a posztra a megtekintéshez</span>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://i.postimg.cc/bw2d9Fcm/3f732b59-0559-42b6-a475-7b2f8355a333.jpg');">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-text">
+                        <span data-i18n="car_3_title">Mostantól EUR-ral is feltöltheted az egyenleged 🇪🇺</span><br><br>
+                        <span style="font-weight: normal; font-size: 12px;" data-i18n="car_3_desc">Csak írj az élő ügyfélszolgálatunknak</span>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://i.postimg.cc/bw2d9Fcm/3f732b59-0559-42b6-a475-7b2f8355a333.jpg');">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-text">
+                        <span style="color: var(--accent-pink);" data-i18n="car_4_title">⚠️ FIGYELEM ⚠️</span><br><br>
+                        <span style="font-weight: normal; font-size: 12px;" data-i18n="car_4_desc">Ha bármi problémát tapasztalsz a bottal, írj a Live Supportnak</span><br><br>
+                        <span style="color: var(--accent-cyan); text-decoration: underline; cursor:pointer;" onclick="openSupport()">Live Support</span>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
         </div>
+
+        <div class="card" style="padding: 0; position: relative; border: 1px solid var(--accent-pink); box-shadow: var(--glow-pink);">
+            <img src="https://i.postimg.cc/zGt3CbfV/1.png" alt="Welcome" style="width: 100%; display: block; border-radius: 12px 12px 0 0;">
+            <div style="padding: 15px; text-align: center; background: rgba(10, 5, 15, 0.85); border-radius: 0 0 12px 12px;">
+                <h3 style="margin: 0; color: var(--accent-cyan); letter-spacing: 2px; text-shadow: var(--glow-cyan);" data-i18n="welcome_title">ÜDVÖZLÜNK!</h3>
+                <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-muted);" data-i18n="welcome_desc">A legjobb minőség, a leggyorsabb kiszolgálás.</p>
+            </div>
+        </div>
+        
         <div style="padding: 0 12px;">
-            <button class="btn-menu" onclick="navigateToTab('view-menu')">📋 RÉGIÓ VÁLASZTÁSA</button>
-            <button class="btn-menu" onclick="showView('view-slot')" style="border-color: var(--accent-pink); color: var(--accent-pink);">🎰 NAPI SLOT JÁTÉK</button>
+            <button class="btn-menu" onclick="navigateToTab('view-menu')" data-i18n="btn_regions">📋 RÉGIÓ VÁLASZTÁSA</button>
+        </div>
+
+        <div style="padding: 0 12px; display: flex; gap: 10px;">
+            <button class="btn-menu" onclick="showView('view-slot')" style="border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: var(--glow-cyan); flex:1;" data-i18n="btn_open_slot">🎰 OPEN SLOT</button>
         </div>
     </div>
 
     <div id="view-menu" class="view-content">
-        <div class="section-title">Budapest & Környéke</div>
+        <div class="section-title" data-i18n="region_bp">Budapest & Környéke</div>
         <div class="grid-container">
-            <div class="grid-btn" onclick="openCity('Corvin')">Corvin</div>
-            <div class="grid-btn" onclick="openCity('Nyugati')">Nyugati</div>
-            <div class="grid-btn" onclick="openCity('Soroksári')">Soroksári</div>
-            <div class="grid-btn" onclick="openCity('Duna Plaza')">Duna Plaza</div>
-            <div class="grid-btn" onclick="openCity('Kelenföld')">Kelenföld</div>
-            <div class="grid-btn" onclick="openCity('Óbuda')">Óbuda</div>
-            <div class="grid-btn" onclick="openCity('Dunakeszi')">Dunakeszi</div>
+            <div class="grid-btn city-btn">Corvin</div><div class="grid-btn city-btn">Nyugati</div>
+            <div class="grid-btn city-btn">Soroksári</div><div class="grid-btn city-btn">Duna Plaza</div>
+            <div class="grid-btn city-btn">Kelenföld</div><div class="grid-btn city-btn">Óbuda</div>
+            <div class="grid-btn city-btn">Dunakeszi</div>
         </div>
-        <div class="section-title">Vidéki Városok</div>
+
+        <div class="section-title" data-i18n="region_vid">Vidéki Városok</div>
         <div class="grid-container">
-            <div class="grid-btn" onclick="openCity('Győr')">Győr</div>
-            <div class="grid-btn" onclick="openCity('Érd')">Érd</div>
-            <div class="grid-btn" onclick="openCity('Budaörs')">Budaörs</div>
-            <div class="grid-btn" onclick="openCity('Debrecen')">Debrecen</div>
-            <div class="grid-btn" onclick="openCity('Székesfehérvár')">Székesfehérvár</div>
-            <div class="grid-btn" onclick="openCity('Szeged')">Szeged</div>
-            <div class="grid-btn" onclick="openCity('Tatabánya')">Tatabánya</div>
-            <div class="grid-btn" onclick="openCity('Kecskemét')">Kecskemét</div>
-            <div class="grid-btn" onclick="openCity('Nyíregyháza')">Nyíregyháza</div>
-            <div class="grid-btn" onclick="openCity('Miskolc')">Miskolc</div>
-            <div class="grid-btn" onclick="openCity('Dunaújváros')">Dunaújváros</div>
-            <div class="grid-btn" onclick="openCity('Szombathely')">Szombathely</div>
-            <div class="grid-btn" onclick="openCity('Szolnok')">Szolnok</div>
+            <div class="grid-btn city-btn">Győr</div><div class="grid-btn city-btn">Érd</div>
+            <div class="grid-btn city-btn">Budaörs</div><div class="grid-btn city-btn">Debrecen</div>
+            <div class="grid-btn city-btn">Székesfehérvár</div><div class="grid-btn city-btn">Szeged</div>
+            <div class="grid-btn city-btn">Tatabánya</div><div class="grid-btn city-btn">Kecskemét</div>
+            <div class="grid-btn city-btn">Nyíregyháza</div><div class="grid-btn city-btn">Miskolc</div>
+            <div class="grid-btn city-btn">Dunaújváros</div><div class="grid-btn city-btn">Szombathely</div>
+            <div class="grid-btn city-btn">Szolnok</div>
         </div>
     </div>
 
     <div id="view-products" class="view-content">
-        <div style="padding: 12px; display: flex; justify-content: space-between;">
-            <div onclick="navigateToTab('view-menu')" style="color: var(--accent-pink); font-weight: bold; cursor: pointer;">← Vissza</div>
-            <div id="current-city-label" style="font-weight: bold;">Város</div>
+        <div style="padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div onclick="navigateToTab('view-menu')" style="color: var(--accent-pink); font-weight: bold; cursor: pointer; text-shadow: var(--glow-pink);" data-i18n="btn_back">← Vissza</div>
+            <div id="current-city-label" style="font-size: 15px; font-weight: bold; color: #fff; text-shadow: 0 0 5px #000;">Város</div>
         </div>
         <div class="product-grid" id="product-list-container"></div>
     </div>
 
+    <div id="view-cart" class="view-content">
+        <div class="card">
+            <h3 style="text-align: center; color: var(--accent-cyan); text-shadow: var(--glow-cyan); margin-top:0;" data-i18n="cart_title">Kosár</h3>
+            <div id="cart-items-container">
+                <p style="text-align: center; color: var(--text-muted); padding: 20px;" data-i18n="cart_empty">A kosár jelenleg üres.</p>
+            </div>
+            <div id="cart-footer" style="display: none; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <div id="discount-display" style="text-align:right; color:var(--accent-pink); font-size:14px; margin-bottom:5px; display:none;"></div>
+                <div class="cart-total" id="cart-total-price">Total: 0 HUF</div>
+                <button class="btn-primary" style="margin-top: 15px;" onclick="checkout()" data-i18n="btn_checkout">RENDELÉS LEADÁSA</button>
+            </div>
+        </div>
+    </div>
+
     <div id="view-wallet" class="view-content">
         <div class="card" style="text-align: center;">
-            <p style="color: var(--text-muted);">Egyenleged:</p>
-            <h2 style="color: var(--accent-cyan);" id="wallet-balance-big">0 HUF</h2>
+            <p style="margin: 0; color: var(--text-muted);" data-i18n="balance_label">Aktuális egyenleged:</p>
+            <h2 style="margin: 10px 0; color: var(--accent-cyan); text-shadow: var(--glow-cyan);" id="wallet-balance-big">0 HUF</h2>
+            <button class="btn-primary" style="margin-bottom: 5px; background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); box-shadow: none;" onclick="refreshBalance()" data-i18n="btn_refresh">🔄 Frissítés</button>
         </div>
+
         <div class="card">
-            <h4 style="color: var(--accent-pink); margin-top: 0;">Solana (SOL) Feltöltés</h4>
-            <div style="background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px; font-size: 11px; word-break: break-all; border: 1px solid var(--accent-cyan); text-align: center;" id="wallet-addr">8ryM6A9nG6iNMW5jBaUkdZ1nf2mZ3pAyNnp2DWoizryj</div>
-            <button class="btn-primary" style="margin-top: 15px;" onclick="copyWallet()">CÍM MÁSOLÁSA</button>
+            <h4 style="margin-top:0; color: var(--accent-pink); text-shadow: var(--glow-pink);" data-i18n="wallet_title">Kripto Feltöltés</h4>
+            
+            <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid var(--accent-cyan); display: flex; justify-content: space-between;">
+                <span style="color: #ccc; font-size: 13px;" data-i18n="sol_rate_label">Exchange Rate:</span>
+                <span style="font-weight: bold; color: var(--accent-cyan);" id="live-sol-rate">1 SOL ≈ Betöltés...</span>
+            </div>
+
+            <ul style="padding-left: 20px; font-size: 12px; color: #ddd; line-height: 1.5; margin-bottom: 15px;">
+                <li style="margin-bottom:8px;" data-i18n="sol_rule1">Send only <strong>Solana (SOL)</strong> to this address. Other funds will be lost forever.</li>
+                <li style="margin-bottom:8px;" data-i18n="sol_rule2">If you use Custodial wallet like Revolut, choose <strong>"Trust Wallet"</strong> option.</li>
+            </ul>
+
+            <div style="background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px; font-size: 11px; word-break: break-all; border: 1px solid var(--accent-cyan); box-shadow: inset 0 0 10px rgba(0,255,255,0.2); text-align: center;" id="wallet-addr">8ryM6A9nG6iNMW5jBaUkdZ1nf2mZ3pAyNnp2DWoizryj</div>
+            <button class="btn-primary" style="margin-top: 15px;" onclick="copyWallet()" data-i18n="btn_copy">CÍM MÁSOLÁSA</button>
+        </div>
+    </div>
+
+    <div id="view-profile" class="view-content">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px; text-shadow: var(--glow-cyan);">👤</div>
+            <h2 style="margin: 0; color: #fff;" id="user-name-display" data-i18n="user_fallback">Felhasználó</h2>
+            
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+                <div style="width: 28px; height: 28px; background: rgba(0, 255, 255, 0.15); border: 2px solid var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--glow-cyan); color: #fff; font-weight: 900; font-size: 11px; text-shadow: 0 0 5px #fff; letter-spacing: 1px;">LC</div>
+                <span style="color: var(--accent-cyan); font-weight: bold; font-size: 16px; text-shadow: var(--glow-cyan);"><span id="lc-display-profile">0</span> LegitCoin</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 style="margin:0 0 10px 0; color:var(--accent-pink); text-shadow:var(--glow-pink);" data-i18n="gift_title">Gift Kód Beváltása</h4>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="gift-code-input" placeholder="Kód beírása..." data-i18n-ph="gift_ph">
+                <button class="btn-primary" style="width:auto; padding:0 20px;" onclick="redeemGiftCode()" data-i18n="btn_redeem">OK</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 style="margin:0 0 10px 0; color:var(--accent-green);" data-i18n="ref_title">🤝 Meghívó Rendszer</h4>
+            <p style="font-size: 12px; color: #ccc;" data-i18n="ref_desc">Hívd meg barátaidat a saját linkeddel!</p>
+            <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid var(--accent-green); text-align: center; margin-bottom: 10px;">
+                <div style="font-weight: bold; color: var(--accent-green); word-break: break-all;" id="ref-link">t.me/LegitShopBot?start=ref</div>
+            </div>
+            <button class="btn-primary" style="background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); box-shadow: none;" onclick="copyRef()" data-i18n="btn_copy_ref">LINK MÁSOLÁSA</button>
         </div>
     </div>
 
     <div id="view-slot" class="view-content">
-        <div class="card" style="text-align: center;">
-            <h4 style="color: var(--accent-cyan);">NAPI PÖRGETÉS</h4>
+        <div style="padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div onclick="navigateToTab('view-home')" style="color: var(--accent-pink); font-weight: bold; cursor: pointer; text-shadow: var(--glow-pink);" data-i18n="btn_back">← Vissza</div>
+            
+            <div style="color: var(--accent-cyan); font-weight: bold; text-shadow: var(--glow-cyan); display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; border: 1px solid var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px;">LC</div>
+                <span id="lc-display">0</span>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center; border-color: var(--accent-cyan); box-shadow: var(--glow-cyan);">
+            <h4 style="margin: 0 0 15px 0; color: var(--accent-cyan); text-shadow: var(--glow-cyan); letter-spacing: 1px;" data-i18n="slot_title">NAPI PÖRGETÉS</h4>
             <div class="slot-container">
                 <div class="slot-box" id="slot1">🍒</div>
                 <div class="slot-box" id="slot2">💎</div>
                 <div class="slot-box" id="slot3">7️⃣</div>
             </div>
-            <button class="btn-primary" id="btn-spin" onclick="spinSlot()">🎰 PÖRGETÉS</button>
+            <button class="btn-primary" id="btn-spin" onclick="spinSlot()" data-i18n="btn_spin">🎰 PÖRGETÉS</button>
+            <div id="spin-timer" style="margin-top: 10px; font-size: 12px; color: var(--accent-pink); font-weight: bold; display: none;"><span data-i18n="next_spin">Új pörgetés:</span> <span id="timer-val">--:--:--</span></div>
+        </div>
+
+        <div class="card">
+            <h4 style="margin: 0 0 15px 0; color: var(--accent-cyan);" data-i18n="coupon_shop">Kupon Bolt</h4>
+            <button class="coupon-btn cpn-cyan" onclick="buyCoupon(0.1, 100)" data-i18n="cpn_10">🎟️ -10% Kedvezmény (100 LC)</button>
+            <button class="coupon-btn cpn-pink" onclick="buyCoupon(0.25, 250)" data-i18n="cpn_25">🎟️ -25% Kedvezmény (250 LC)</button>
+            <button class="coupon-btn cpn-green" onclick="buyCoupon(0.5, 500)" data-i18n="cpn_50">🎟️ -50% Kedvezmény (500 LC)</button>
+            <p id="active-coupon-display" style="color:var(--accent-pink); font-size:12px; text-align:center; font-weight:bold; display:none; margin-top:10px;"></p>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="navigateToTab('view-home')">🏠<span>Home</span></div>
-        <div class="nav-item" onclick="navigateToTab('view-menu')">📋<span>Menu</span></div>
-        <div class="nav-item" onclick="navigateToTab('view-wallet')">👛<span>Wallet</span></div>
+        <div class="nav-item active" data-target="view-home"><span class="nav-icon">🏠</span><span data-i18n="nav_home">Home</span></div>
+        <div class="nav-item" data-target="view-menu"><span class="nav-icon">📋</span><span data-i18n="nav_menu">Menu</span></div>
+        <div class="nav-item" data-target="view-cart"><span class="nav-icon">🛒</span><span id="cart-count-badge" data-i18n="nav_cart">Kosár</span></div>
+        <div class="nav-item" data-target="view-wallet"><span class="nav-icon">👛</span><span data-i18n="nav_wallet">Wallet</span></div>
+        <div class="nav-item" data-target="view-profile"><span class="nav-icon">👤</span><span data-i18n="nav_profile">Account</span></div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        let userBalance = 0;
+        const user = tg.initDataUnsafe?.user;
+        const userName = user?.first_name || "Vendég";
+        const userId = user?.id || Math.floor(Math.random()*100000);
+        document.getElementById('user-name-display').innerText = userName;
+        document.getElementById('ref-link').innerText = `t.me/LegitShopBot?start=ref_${userId}`;
+
+        let userBalance = parseInt(localStorage.getItem('legit_balance')) || 0;
+        let legitCoins = parseInt(localStorage.getItem('legit_coins')) || 0;
+        let activeDiscount = parseFloat(localStorage.getItem('legit_discount')) || 0; 
+        let cart = [];
+
+        let currentLang = 'hu';
+        const translations = {
+            hu: {
+                top_balance: "Balance", nav_home: "Home", nav_menu: "Menu", nav_cart: "Kosár", nav_wallet: "Wallet", nav_profile: "Account",
+                btn_open_slot: "🎰 OPEN SLOT", welcome_title: "ÜDVÖZLÜNK!", welcome_desc: "A legjobb minőség, a leggyorsabb kiszolgálás.", btn_regions: "📋 RÉGIÓ VÁLASZTÁSA", btn_support: "💬 ÜGYFÉLSZOLGÁLAT",
+                region_bp: "Budapest & Környéke", region_vid: "Vidéki Városok",
+                btn_back: "← Vissza", btn_add: "Hozzáad", stock_last: "Utolsó", stock_pcs: "db!", stock_in: "Raktáron:",
+                cart_title: "Kosár", cart_empty: "A kosár jelenleg üres.", btn_checkout: "RENDELÉS LEADÁSA", btn_del: "Törlés", total_text: "Total", cpn_disc: "Kupon kedvezmény",
+                balance_label: "Aktuális egyenleged:", btn_refresh: "🔄 Frissítés", wallet_title: "Kripto Feltöltés", sol_rate_label: "Exchange Rate:",
+                sol_rule1: "Kizárólag <strong>Solana (SOL)</strong>-t küldj erre a címre.",
+                sol_rule2: "Revolut esetén válaszd a <strong>\"Trust Wallet\"</strong> opciót.",
+                btn_copy: "CÍM MÁSOLÁSA",
+                user_fallback: "Felhasználó", gift_title: "Gift Kód Beváltása", gift_ph: "Kód beírása...", btn_redeem: "OK", ref_title: "🤝 Meghívó Rendszer", ref_desc: "Hívd meg barátaidat!", btn_copy_ref: "LINK MÁSOLÁSA",
+                slot_title: "NAPI PÖRGETÉS", btn_spin: "🎰 PÖRGETÉS", next_spin: "Új pörgetés:", slot_desc: "Pörgess minden nap!", coupon_shop: "Kupon Bolt",
+                cpn_10: "🎟️ -10% (100 LC)", cpn_25: "🎟️ -25% (250 LC)", cpn_50: "🎟️ -50% (500 LC)", active_cpn: "Aktív kupon",
+                a_lang: "Nyelv megváltoztatva!", a_copy: "Másolva!", a_cart: "Kosárba került!", a_no_bal: "Nincs elég egyenleged!", a_chk_q: "Leadod a rendelést", a_gift_used: "Már felhasználtad!", a_gift_ok: "Sikeres beváltás!", a_gift_bad: "Rossz kód.", a_won: "Nyertél", a_cpn_has: "Már van kuponod!", a_cpn_ok: "Kupon aktiválva.", a_cpn_bad: "Nincs elég LC!", a_ref_ref: "Frissítve!",
+                a_max_stock: "Készlethiány!", a_max_cart: "Több nem rendelhető!",
+                car_1_title: "Update: 2026.03.23", car_1_desc: "Nyíregyháza, Miskolc, Győr, Kecskemét",
+                car_2_title: "Töltési útmutató", car_2_desc: "Kattints ide",
+                car_3_title: "EUR feltöltés elérhető", car_3_desc: "Írj a supportnak",
+                car_4_title: "⚠️ FIGYELEM ⚠️", car_4_desc: "Probléma esetén írj a Live Supportnak"
+            },
+            en: {
+                top_balance: "Balance", nav_home: "Home", nav_menu: "Menu", nav_cart: "Cart", nav_wallet: "Wallet", nav_profile: "Account",
+                btn_open_slot: "🎰 OPEN SLOT", welcome_title: "WELCOME!", welcome_desc: "Best quality, fastest service.", btn_regions: "📋 SELECT REGION", btn_support: "💬 SUPPORT",
+                region_bp: "Budapest Area", region_vid: "Other Cities",
+                btn_back: "← Back", btn_add: "Add", stock_last: "Last", stock_pcs: "pcs!", stock_in: "Stock:",
+                cart_title: "Cart", cart_empty: "Your cart is empty.", btn_checkout: "ORDER", btn_del: "Del", total_text: "Total", cpn_disc: "Coupon",
+                balance_label: "Balance:", btn_refresh: "🔄 Refresh", wallet_title: "Crypto Top-up", sol_rate_label: "Rate:",
+                sol_rule1: "Send only <strong>Solana (SOL)</strong>.",
+                sol_rule2: "For Revolut, use <strong>\"Trust Wallet\"</strong>.",
+                btn_copy: "COPY",
+                user_fallback: "User", gift_title: "Gift Code", gift_ph: "Code...", btn_redeem: "OK", ref_title: "🤝 Referral", ref_desc: "Invite friends!", btn_copy_ref: "COPY LINK",
+                slot_title: "DAILY SPIN", btn_spin: "🎰 SPIN", next_spin: "Next spin:", slot_desc: "Spin daily!", coupon_shop: "Coupons",
+                cpn_10: "🎟️ -10% (100 LC)", cpn_25: "🎟️ -25% (250 LC)", cpn_50: "🎟️ -50% (500 LC)", active_cpn: "Active",
+                a_lang: "Language changed!", a_copy: "Copied!", a_cart: "Added!", a_no_bal: "No balance!", a_chk_q: "Order for", a_won: "You won", a_gift_ok: "Success!", a_ref_ref: "Refreshed!",
+                a_max_stock: "Out of stock!", a_max_cart: "Max limit!",
+                car_1_title: "Update: 2026.03.23", car_1_desc: "Nyíregyháza, Miskolc, Győr, Kecskemét",
+                car_2_title: "Top-up guide", car_2_desc: "Click here",
+                car_3_title: "EUR top-up available", car_3_desc: "Message support",
+                car_4_title: "⚠️ ATTENTION ⚠️", car_4_desc: "Problems? Message Live Support"
+            }
+        };
+
+        function getStr(key) { return translations[currentLang][key]; }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'hu' ? 'en' : 'hu';
+            document.getElementById('btn-lang').innerText = currentLang === 'hu' ? 'EN' : 'HU';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) el.innerHTML = translations[currentLang][key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (translations[currentLang][key]) el.placeholder = translations[currentLang][key];
+            });
+            updateDisplays(); renderCart(); updateCartBadge();
+            const activeCity = document.getElementById('current-city-label').innerText;
+            if(activeCity !== "Város" && activeCity !== "City") renderProducts(activeCity);
+            tg.showAlert(getStr('a_lang'));
+        }
+
+        function updateDisplays() {
+            document.getElementById('top-balance-display').innerText = userBalance + " HUF";
+            document.getElementById('wallet-balance-big').innerText = userBalance + " HUF";
+            document.getElementById('lc-display').innerText = legitCoins;
+            document.getElementById('lc-display-profile').innerText = legitCoins;
+            const cpnDisp = document.getElementById('active-coupon-display');
+            if (activeDiscount > 0) {
+                cpnDisp.style.display = 'block';
+                cpnDisp.innerText = `${getStr('active_cpn')}: -${activeDiscount*100}%!`;
+            } else {
+                cpnDisp.style.display = 'none';
+            }
+        }
+        updateDisplays();
+
+        async function fetchSolPrice() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=huf');
+                const data = await response.json();
+                if(data.solana && data.solana.huf) {
+                    const price = Math.round(data.solana.huf).toLocaleString('hu-HU');
+                    document.getElementById('live-sol-rate').innerText = `1 SOL ≈ ${price} HUF`;
+                }
+            } catch (error) { document.getElementById('live-sol-rate').innerText = "1 SOL ≈ API Hiba"; }
+        }
+        fetchSolPrice(); setInterval(fetchSolPrice, 60000);
+
+        function openSupport() { tg.openTelegramLink('https://t.me/TE_FIOKOD_NEVE'); }
+        function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link').innerText); tg.showAlert(getStr('a_copy')); }
+
+        function navigateToTab(tabId) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            const activeNav = document.querySelector(`.nav-item[data-target="${tabId}"]`);
+            if(activeNav) activeNav.classList.add('active');
+            showView(tabId);
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => { navigateToTab(item.getAttribute('data-target')); });
+        });
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            if(viewId === 'view-cart') renderCart();
+            window.scrollTo(0,0);
+        }
+
+        // CAROUSEL LOGIC
+        const track = document.getElementById('home-carousel');
+        setInterval(() => {
+            if(!track) return;
+            const slideWidth = track.offsetWidth;
+            const maxScroll = track.scrollWidth - slideWidth;
+            if (track.scrollLeft >= maxScroll - 5) {
+                track.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                track.scrollBy({ left: slideWidth, behavior: 'smooth' });
+            }
+        }, 4000);
+
+        // PRODUCTS ARRAY
         const products = [
             { id: 1, name: "LCG 17 (3g)", price: 21500, img: "https://i.postimg.cc/zGt3CbfV/1.png" },
             { id: 2, name: "LCG 17 (5g)", price: 35000, img: "https://i.postimg.cc/zGt3CbfV/1.png" },
@@ -155,61 +487,180 @@
             { id: 10, name: "XTC (280MG)", price: 15500, img: "https://i.postimg.cc/zGt3CbfV/1.png" }
         ];
 
-        function showView(viewId) {
-            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+        document.querySelectorAll('.city-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cityName = this.innerText;
+                document.getElementById('current-city-label').innerText = cityName;
+                renderProducts(cityName);
+                showView('view-products');
+            });
+        });
+
+        function getStockLevel(cityName, productId) {
+            let str = cityName + productId + "legit"; 
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            return (Math.abs(hash) % 15) + 1; 
         }
 
-        function navigateToTab(tabId) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            showView(tabId);
-        }
-
-        function openCity(cityName) {
-            document.getElementById('current-city-label').innerText = cityName;
-            renderProducts();
-            showView('view-products');
-        }
-
-        function renderProducts() {
+        function renderProducts(cityName) {
             const container = document.getElementById('product-list-container');
             container.innerHTML = '';
+            const btnText = getStr('btn_add');
             products.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
+                const stock = getStockLevel(cityName, p.id);
+                let stockHtml = (stock <= 3) ? `<div class="stock-badge stock-low">${getStr('stock_last')} ${stock} ${getStr('stock_pcs')}</div>` : `<div class="stock-badge stock-good">${getStr('stock_in')} ${stock}</div>`;
+
                 card.innerHTML = `
-                    <div class="product-img"><img src="${p.img}"><div class="stock-badge">Raktáron</div></div>
+                    <div class="product-img"><img src="${p.img}">${stockHtml}</div>
                     <div class="product-info">
                         <div class="product-title">${p.name}</div>
                         <div class="product-price">${p.price.toLocaleString()} HUF</div>
-                        <button class="btn-primary" style="padding: 8px; font-size: 11px;">KOSÁRBA</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="updateQtyBtn(this, -1, ${stock})">-</button>
+                            <span class="p-qty">1</span>
+                            <button class="qty-btn" onclick="updateQtyBtn(this, 1, ${stock})">+</button>
+                        </div>
+                        <button class="btn-primary" style="padding: 8px; font-size:12px;" onclick="addToCart(${p.id}, '${p.name}', ${p.price}, this, ${stock})">${btnText}</button>
                     </div>`;
                 container.appendChild(card);
             });
         }
 
-        function spinSlot() {
-            const emojis = ["🍒", "💎", "7️⃣", "🍀", "🔔"];
-            const s1 = document.getElementById('slot1'), s2 = document.getElementById('slot2'), s3 = document.getElementById('slot3');
-            let count = 0;
-            const timer = setInterval(() => {
-                s1.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-                s2.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-                s3.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-                count++;
-                if(count > 15) { clearInterval(timer); tg.showAlert("Nyertél 50 LegitCoint! 🪙"); }
-            }, 100);
+        function updateQtyBtn(btn, change, maxStock) {
+            const span = btn.parentElement.querySelector('.p-qty');
+            let val = parseInt(span.innerText) + change;
+            if(val < 1) val = 1;
+            if(val > maxStock) { val = maxStock; tg.showAlert(getStr('a_max_stock') + " " + maxStock); }
+            span.innerText = val;
+        }
+
+        function addToCart(id, name, price, btn, maxStock) {
+            const qty = parseInt(btn.parentElement.querySelector('.p-qty').innerText);
+            const existing = cart.find(item => item.id === id);
+            const currentCartQty = existing ? existing.qty : 0;
+            if (currentCartQty + qty > maxStock) { tg.showAlert(getStr('a_max_cart')); return; }
+            if(existing) { existing.qty += qty; } else { cart.push({ id, name, price, qty }); }
+            updateCartBadge(); tg.HapticFeedback.impactOccurred('light'); tg.showAlert(getStr('a_cart'));
+        }
+
+        function updateCartBadge() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            const cartText = getStr('nav_cart');
+            document.getElementById('cart-count-badge').innerText = count > 0 ? `${cartText} (${count})` : cartText;
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const footer = document.getElementById('cart-footer');
+            const discDisplay = document.getElementById('discount-display');
+            if(cart.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">${getStr('cart_empty')}</p>`;
+                footer.style.display = 'none'; return;
+            }
+            footer.style.display = 'block'; container.innerHTML = '';
+            let total = 0;
+            const delText = getStr('btn_del');
+            cart.forEach((item, index) => {
+                const subtotal = item.price * item.qty; total += subtotal;
+                const div = document.createElement('div'); div.className = 'cart-item';
+                div.innerHTML = `<div><div style="font-weight:bold; color:#fff;">${item.name}</div><div style="font-size:11px; color:var(--text-muted);">${item.qty}x ${item.price.toLocaleString()} HUF</div></div>
+                    <div style="text-align:right;"><div style="color:var(--accent-cyan);">${subtotal.toLocaleString()} HUF</div><button onclick="removeFromCart(${index})" style="background:none; border:none; color:var(--accent-pink); font-size:11px; font-weight:bold;">${delText}</button></div>`;
+                container.appendChild(div);
+            });
+            let finalTotal = total;
+            if (activeDiscount > 0) {
+                const minus = total * activeDiscount; finalTotal = total - minus;
+                discDisplay.style.display = 'block'; discDisplay.innerText = `${getStr('cpn_disc')}: -${minus.toLocaleString()} HUF`;
+            } else { discDisplay.style.display = 'none'; }
+            document.getElementById('cart-total-price').innerText = `${getStr('total_text')}: ${finalTotal.toLocaleString()} HUF`;
+            document.getElementById('cart-footer').dataset.finalTotal = finalTotal;
+        }
+
+        function removeFromCart(index) { cart.splice(index, 1); renderCart(); updateCartBadge(); }
+
+        function checkout() {
+            const finalTotal = parseFloat(document.getElementById('cart-footer').dataset.finalTotal);
+            if (userBalance < finalTotal) { tg.showAlert(getStr('a_no_bal')); return; }
+            tg.showConfirm(`${getStr('a_chk_q')} ${finalTotal.toLocaleString()} HUF?`, (ok) => {
+                if(ok) {
+                    const selectedCity = document.getElementById('current-city-label').innerText;
+                    userBalance -= finalTotal; activeDiscount = 0;
+                    localStorage.setItem('legit_balance', userBalance); localStorage.setItem('legit_discount', 0);
+                    tg.sendData(JSON.stringify({order: cart, city: selectedCity, total: finalTotal})); tg.close();
+                }
+            });
         }
 
         function copyWallet() {
             const addr = document.getElementById('wallet-addr').innerText;
-            navigator.clipboard.writeText(addr);
-            tg.showAlert("Cím másolva!");
+            navigator.clipboard.writeText(addr); tg.showAlert(getStr('a_copy'));
         }
 
-        function toggleLanguage() {
-            tg.showAlert("Nyelv váltás hamarosan...");
+        function refreshBalance() {
+            tg.HapticFeedback.impactOccurred('medium'); fetchSolPrice();
+            const el1 = document.getElementById('top-balance-display'), el2 = document.getElementById('wallet-balance-big');
+            el1.style.opacity = '0.5'; el2.style.opacity = '0.5';
+            setTimeout(() => { el1.style.opacity = '1'; el2.style.opacity = '1'; tg.showAlert(getStr('a_ref_ref')); }, 800);
         }
+
+        function redeemGiftCode() {
+            const input = document.getElementById('gift-code-input').value.trim();
+            if (input === 'start5000') {
+                if (localStorage.getItem('gift_start5000')) { tg.showAlert(getStr('a_gift_used')); } else {
+                    userBalance += 5000; localStorage.setItem('legit_balance', userBalance); localStorage.setItem('gift_start5000', 'true');
+                    updateDisplays(); tg.HapticFeedback.notificationOccurred('success'); tg.showAlert(getStr('a_gift_ok') + " +5000 HUF");
+                    document.getElementById('gift-code-input').value = '';
+                }
+            } else { tg.showAlert(getStr('a_gift_bad')); }
+        }
+
+        const SPIN_COOLDOWN = 24 * 60 * 60 * 1000;
+        function checkSpinStatus() {
+            const lastSpin = localStorage.getItem('lastSpinTime');
+            if (lastSpin && (Date.now() - lastSpin < SPIN_COOLDOWN)) {
+                document.getElementById('btn-spin').disabled = true;
+                const timerWrap = document.getElementById('spin-timer'); timerWrap.style.display = 'block';
+                const update = () => {
+                    const diff = SPIN_COOLDOWN - (Date.now() - lastSpin);
+                    if(diff <= 0) { document.getElementById('btn-spin').disabled = false; timerWrap.style.display = 'none'; return; }
+                    const h = Math.floor(diff / (1000*60*60)), m = Math.floor((diff % (1000*60*60)) / (1000*60));
+                    document.getElementById('timer-val').innerText = `${h}h ${m}m`;
+                };
+                update(); setInterval(update, 60000);
+            }
+        }
+
+        function spinSlot() {
+            tg.HapticFeedback.impactOccurred('heavy');
+            const btn = document.getElementById('btn-spin'); btn.disabled = true;
+            const emojis = ["🍒", "💎", "7️⃣", "🍀", "🔔"];
+            const s1 = document.getElementById('slot1'), s2 = document.getElementById('slot2'), s3 = document.getElementById('slot3');
+            let spins = 0;
+            const interval = setInterval(() => {
+                s1.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+                s2.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+                s3.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+                if (++spins > 20) {
+                    clearInterval(interval); localStorage.setItem('lastSpinTime', Date.now()); checkSpinStatus();
+                    const wonLC = Math.floor(Math.random() * 41) + 10; legitCoins += wonLC;
+                    localStorage.setItem('legit_coins', legitCoins); updateDisplays();
+                    tg.showAlert(`${getStr('a_won')} ${wonLC} LegitCoin! 🪙`);
+                }
+            }, 100);
+        }
+
+        function buyCoupon(pct, cost) {
+            if (activeDiscount > 0) return tg.showAlert(getStr('a_cpn_has'));
+            if (legitCoins >= cost) {
+                legitCoins -= cost; activeDiscount = pct;
+                localStorage.setItem('legit_coins', legitCoins); localStorage.setItem('legit_discount', activeDiscount);
+                updateDisplays(); renderCart(); tg.HapticFeedback.notificationOccurred('success'); tg.showAlert(getStr('a_cpn_ok'));
+            } else { tg.showAlert(getStr('a_cpn_bad')); }
+        }
+        checkSpinStatus();
     </script>
 </body>
 </html>
