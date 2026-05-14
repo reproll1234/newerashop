@@ -35,6 +35,7 @@
         .card { background: var(--card-bg); backdrop-filter: blur(8px); margin: 12px; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); box-shadow: var(--glow-cyan); }
         .section-title { font-size: 14px; margin: 15px 12px 5px 12px; color: var(--accent-pink); font-weight: bold; text-transform: uppercase; text-shadow: var(--glow-pink); }
         .btn-primary { background: linear-gradient(90deg, #aa00ff, #00ffff); color: #000; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; }
+        .btn-primary:disabled { background: #555; opacity: 0.6; cursor: not-allowed; }
         .btn-menu { background: var(--btn-bg); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 15px; border-radius: 8px; width: 100%; margin-bottom: 12px; font-weight: bold; cursor: pointer; box-shadow: var(--glow-cyan); }
         .grid-container { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 12px 20px 12px; justify-content: center; }
         .grid-btn { background: var(--btn-bg); border: 1px solid rgba(255,0,255,0.4); color: #fff; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; flex: 1 1 45%; font-size: 12px; }
@@ -54,10 +55,9 @@
         .view-content { display: none; }
         .view-content.active { display: block; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        input[type="text"] { background: rgba(0,0,0,0.5); border: 1px solid var(--accent-pink); color: white; padding: 12px; border-radius: 8px; font-size: 14px; outline: none; width: 100%; box-shadow: inset var(--glow-pink); }
+        input[type="text"] { background: rgba(0,0,0,0.5); border: 1px solid var(--accent-pink); color: white; padding: 12px; border-radius: 8px; font-size: 14px; outline: none; width: 100%; }
         .slot-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .slot-box { background: rgba(0, 0, 0, 0.7); border: 2px solid var(--accent-cyan); border-radius: 10px; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: inset var(--glow-cyan); }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 12px; }
     </style>
 </head>
 <body>
@@ -91,6 +91,15 @@
                 </div>
             </div>
         </div>
+
+        <div class="card" style="padding: 0; position: relative; border: 1px solid var(--accent-pink); box-shadow: var(--glow-pink);">
+            <img src="https://i.postimg.cc/zGt3CbfV/1.png" alt="Welcome" style="width: 100%; display: block; border-radius: 12px 12px 0 0;">
+            <div style="padding: 15px; text-align: center; background: rgba(10, 5, 15, 0.85); border-radius: 0 0 12px 12px;">
+                <h3 style="margin: 0; color: var(--accent-cyan);" data-i18n="welcome_title">ÜDVÖZLÜNK!</h3>
+                <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-muted);" data-i18n="welcome_desc">Minőség és biztonság mindenek felett.</p>
+            </div>
+        </div>
+
         <div style="padding: 0 12px;"><button class="btn-menu" onclick="navigateToTab('view-menu')" data-i18n="btn_regions">📋 RÉGIÓ VÁLASZTÁSA</button></div>
         <div style="padding: 0 12px;"><button class="btn-menu" onclick="showView('view-slot')" style="border-color: var(--accent-pink); color: var(--accent-pink);" data-i18n="btn_open_slot">🎰 OPEN SLOT</button></div>
     </div>
@@ -171,7 +180,7 @@
 
     <div id="view-slot" class="view-content">
         <div style="padding: 12px;"><div onclick="navigateToTab('view-home')" style="color: var(--accent-pink); font-weight: bold; cursor: pointer;" data-i18n="btn_back">← Vissza</div></div>
-        <div class="card" style="text-align: center;">
+        <div class="card" style="text-align: center; border-color: var(--accent-cyan); box-shadow: var(--glow-cyan);">
             <h4 style="color: var(--accent-cyan);" data-i18n="slot_title">NAPI PÖRGETÉS</h4>
             <div class="slot-container">
                 <div class="slot-box" id="slot1">🍒</div>
@@ -179,6 +188,7 @@
                 <div class="slot-box" id="slot3">7️⃣</div>
             </div>
             <button class="btn-primary" id="btn-spin" onclick="spinSlot()" data-i18n="btn_spin">🎰 PÖRGETÉS</button>
+            <div id="spin-timer" style="margin-top: 10px; font-size: 12px; color: var(--accent-pink); font-weight: bold; display: none;"><span data-i18n="next_spin">Új pörgetés:</span> <span id="timer-val">--:--:--</span></div>
         </div>
     </div>
 
@@ -205,7 +215,7 @@
                 btn_checkout: "RENDELÉS LEADÁSA", balance_label: "Egyenleg:", btn_refresh: "🔄 Frissítés", wallet_title: "Solana (SOL) Feltöltés",
                 sol_rule1: "Kizárólag Solana (SOL)-t küldj erre a címre.", sol_rule2: "Revolut esetén válaszd a 'Trust Wallet' opciót.",
                 btn_copy: "CÍM MÁSOLÁSA", slot_title: "NAPI PÖRGETÉS", btn_spin: "🎰 PÖRGETÉS", btn_add: "Hozzáad", car_1: "Update: 2026.03.23<br>Friss készletek minden városban!", car_2: "Új termékek érkeztek!<br>Nézd meg a kínálatot.",
-                car_3_desc: "Váltsd be a Profil menüben 2500 Ft-ért!", gift_title: "Gift Kód Beváltása", gift_ph: "Kód beírása...", a_gift_ok: "Sikeres beváltás!", a_gift_used: "Már felhasználtad!", a_gift_bad: "Érvénytelen kód."
+                car_3_desc: "Váltsd be a Profil menüben 2500 Ft-ért!", gift_title: "Gift Kód Beváltása", gift_ph: "Kód beírása...", a_gift_ok: "Sikeres beváltás!", a_gift_used: "Már felhasználtad!", a_gift_bad: "Érvénytelen kód.", next_spin: "Új pörgetés:"
             },
             en: {
                 top_balance: "Balance", nav_home: "Home", nav_menu: "Menu", nav_cart: "Cart", nav_wallet: "Wallet", nav_profile: "Profile",
@@ -214,21 +224,21 @@
                 btn_checkout: "PLACE ORDER", balance_label: "Balance:", btn_refresh: "🔄 Refresh", wallet_title: "Solana (SOL) Top-up",
                 sol_rule1: "Send only Solana (SOL) to this address.", sol_rule2: "For Revolut, use the 'Trust Wallet' option.",
                 btn_copy: "COPY ADDRESS", slot_title: "DAILY SPIN", btn_spin: "🎰 SPIN", btn_add: "Add", car_1: "Update: 2026.03.23<br>Fresh stocks in every city!", car_2: "New products arrived!<br>Check the selection.",
-                car_3_desc: "Redeem in Profile for 2500 HUF!", gift_title: "Redeem Gift Code", gift_ph: "Enter code...", a_gift_ok: "Success!", a_gift_used: "Already used!", a_gift_bad: "Invalid code."
+                car_3_desc: "Redeem in Profile for 2500 HUF!", gift_title: "Redeem Gift Code", gift_ph: "Enter code...", a_gift_ok: "Success!", a_gift_used: "Already used!", a_gift_bad: "Invalid code.", next_spin: "Next spin:"
             }
         };
 
         const products = [
-            { id: 1, name: "LCG 17 (3g)", price: 21.500, img: "LCG.jpg" },
-            { id: 2, name: "LCG 17 (5g)", price: 35.000, img: "LCG.jpg" },
-            { id: 3, name: "Purple Runtz (3g)", price: 24.000, img: "Purple.avif" },
-            { id: 4, name: "Purple Runtz (5g)", price: 37.000, img: "Purple.avif" },
-            { id: 5, name: "Mephedron (2g)", price: 34.000, img: "Meph.jpeg" },
-            { id: 6, name: "Mephedron (3g)", price: 50.000, img: "Meph.jpeg" },
-            { id: 7, name: "Cocaine (1g)", price: 48.000, img: "Coke.jpg" },
-            { id: 8, name: "Cocaine (2g)", price: 80.000, img: "Coke.jpg" },
-            { id: 9, name: "MDMA (2g)", price: 24.000, img: "MDMA.png" },
-            { id: 10, name: "XTC (280MG)", price: 15.500, img: "Xtc.jpg" }
+            { id: 1, name: "LCG 17 (3g)", price: 21500, img: "LCG.jpg" },
+            { id: 2, name: "LCG 17 (5g)", price: 35000, img: "LCG.jpg" },
+            { id: 3, name: "Purple Runtz (3g)", price: 24000, img: "Purple.avif" },
+            { id: 4, name: "Purple Runtz (5g)", price: 37000, img: "Purple.avif" },
+            { id: 5, name: "Mephedron (2g)", price: 34000, img: "Meph.jpeg" },
+            { id: 6, name: "Mephedron (3g)", price: 50000, img: "Meph.jpeg" },
+            { id: 7, name: "Cocaine (0.5g)", price: 48000, img: "Coke.jpg" },
+            { id: 8, name: "Cocaine (1g)", price: 50000, img: "Coke.jpg" },
+            { id: 9, name: "MDMA (2g)", price: 24000, img: "MDMA.png" },
+            { id: 10, name: "XTC (280MG)", price: 15500, img: "Xtc.jpg" }
         ];
 
         function updateDisplays() {
@@ -245,8 +255,6 @@
                 const key = el.getAttribute('data-i18n');
                 if (translations[currentLang][key]) el.innerHTML = translations[currentLang][key];
             });
-            const ph = document.getElementById('gift-code-input');
-            if(ph) ph.placeholder = translations[currentLang].gift_ph;
             const city = document.getElementById('current-city-label').innerText;
             if(city !== "Város" && city !== "City") renderProducts(city);
             if(document.getElementById('view-cart').classList.contains('active')) renderCart();
@@ -342,8 +350,7 @@
         }
 
         function removeFromCart(index) {
-            cart.splice(index, 1);
-            renderCart();
+            cart.splice(index, 1); renderCart();
             const count = cart.reduce((sum, item) => sum + item.qty, 0);
             document.getElementById('cart-count-badge').innerText = count > 0 ? `${translations[currentLang].nav_cart} (${count})` : translations[currentLang].nav_cart;
         }
@@ -362,12 +369,33 @@
                     tg.showAlert(translations[currentLang].a_gift_ok + " +2500 HUF");
                     codeInput.value = '';
                 }
-            } else {
-                tg.showAlert(translations[currentLang].a_gift_bad);
+            } else { tg.showAlert(translations[currentLang].a_gift_bad); }
+        }
+
+        // SLOT MACHINE LOGIC (VISSZAÁLLÍTVA)
+        const SPIN_COOLDOWN = 24 * 60 * 60 * 1000;
+        function checkSpinStatus() {
+            const lastSpin = localStorage.getItem('lastSpinTime');
+            const btn = document.getElementById('btn-spin');
+            const timerWrap = document.getElementById('spin-timer');
+            if (lastSpin && (Date.now() - lastSpin < SPIN_COOLDOWN)) {
+                btn.disabled = true;
+                timerWrap.style.display = 'block';
+                updateTimer(lastSpin);
+                setInterval(() => updateTimer(lastSpin), 1000);
             }
         }
 
+        function updateTimer(lastSpin) {
+            const diff = SPIN_COOLDOWN - (Date.now() - lastSpin);
+            if (diff <= 0) { location.reload(); return; }
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('timer-val').innerText = `${h}h ${m}m`;
+        }
+
         function spinSlot() {
+            tg.HapticFeedback.impactOccurred('heavy');
             const btn = document.getElementById('btn-spin'); btn.disabled = true;
             const emojis = ["🍒", "💎", "7️⃣", "🍀", "🔔"];
             const s1 = document.getElementById('slot1'), s2 = document.getElementById('slot2'), s3 = document.getElementById('slot3');
@@ -377,11 +405,11 @@
                 s2.innerText = emojis[Math.floor(Math.random()*emojis.length)];
                 s3.innerText = emojis[Math.floor(Math.random()*emojis.length)];
                 if (++spins > 20) {
-                    clearInterval(interval); btn.disabled = false;
-                    neweraCoins += 50;
-                    localStorage.setItem('legit_coins', neweraCoins);
-                    updateDisplays();
-                    tg.showAlert("You won 50 NEWERA Coins! 🪙");
+                    clearInterval(interval);
+                    localStorage.setItem('lastSpinTime', Date.now());
+                    neweraCoins += 50; localStorage.setItem('legit_coins', neweraCoins);
+                    updateDisplays(); checkSpinStatus();
+                    tg.showAlert(`${translations[currentLang].a_won} 50 NEWERA Coin! 🪙`);
                 }
             }, 100);
         }
@@ -395,6 +423,8 @@
             if (homeTrack.scrollLeft >= max - 5) homeTrack.scrollTo({ left: 0, behavior: 'smooth' });
             else homeTrack.scrollBy({ left: homeTrack.offsetWidth, behavior: 'smooth' });
         }, 4000);
+
+        checkSpinStatus();
     </script>
 </body>
 </html>
