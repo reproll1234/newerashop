@@ -8,13 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #050a14; /* Sötétkék háttér */
-            --panel: #0b1426; /* Világosabb kék panelek */
-            --primary: #d4af37; /* Királykék / Arany - Fő arany */
-            --secondary: #4da6ff; /* Világoskék kiemelés */
-            --gold-bright: #ffd700;
-            --text: #ffffff; --muted: #8a9bb8; 
-            --border: rgba(212, 175, 55, 0.3); /* Arany keret */
+            --bg: #050a14; 
+            --panel: #0b1426; 
+            --primary: #d4af37; 
+            --secondary: #4da6ff; 
+            --text: #ffffff; 
+            --muted: #8a9bb8; 
+            --border: rgba(212, 175, 55, 0.3);
+            --success: #14F195;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
@@ -62,17 +63,21 @@
 
         /* Premium Wallet Card */
         .premium-wallet { background: linear-gradient(135deg, #0b1426 0%, #050a14 100%); border: 1px solid var(--primary); padding: 25px; border-radius: 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15); position: relative; overflow: hidden; }
-        .premium-wallet::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 60%); pointer-events: none; }
         .copy-area { background: rgba(0,0,0,0.6); border: 1px dashed var(--primary); padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 20px; }
         .copy-icon { font-size: 20px; cursor: pointer; color: var(--primary); }
         
-        /* Spin animation for refresh button */
         .spin { animation: spin 0.5s linear; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Trust Wallet Guide */
+        /* Lists & Transactions */
         .guide-step { display: flex; gap: 10px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
         .step-num { background: var(--primary); color: #000; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 10px; }
+        
+        .tx-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
+        .tx-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .tx-date { color: var(--muted); font-size: 10px; }
+        .tx-amount { color: var(--primary); font-weight: bold; font-family: monospace; font-size: 14px; }
+        .tx-status { color: var(--success); font-weight: bold; font-size: 10px; background: rgba(20, 241, 149, 0.1); padding: 3px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -104,14 +109,9 @@
 
     <div id="v-logs" class="view">
         <div class="card" style="border-left: 3px solid var(--primary); background: linear-gradient(90deg, rgba(212,175,55,0.1) 0%, var(--panel) 100%);">
-            <div style="font-family:monospace; font-size:10px; color:var(--secondary);">2026.05.15 // 14:00</div>
-            <div style="font-weight:bold; margin:5px 0; color: var(--primary);" data-i18n="news_3_t">🎁 ÜDVÖZLŐ BÓNUSZ</div>
-            <div style="font-size:12px; color:var(--text);" data-i18n="news_3_b">Írd be a profilodnál a START2500 kódot, és azonnal jóváírunk 2500 Ft-ot a számládon!</div>
-        </div>
-        <div class="card">
             <div style="font-family:monospace; font-size:10px; color:var(--secondary);">2026.05.14 // 10:30</div>
-            <div style="font-weight:bold; margin:5px 0;" data-i18n="news_1_t">ÚJ SZÁLLÍTMÁNY: VIP ORGANIC</div>
-            <div style="font-size:12px; color:var(--muted);" data-i18n="news_1_b">A prémium minőségű LCG és Purple Runtz készletek feltöltve. A mennyiség korlátozott.</div>
+            <div style="font-weight:bold; margin:5px 0; color: var(--primary);" data-i18n="news_1_t">ÚJ SZÁLLÍTMÁNY: VIP ORGANIC</div>
+            <div style="font-size:12px; color:var(--text);" data-i18n="news_1_b">A prémium minőségű LCG és Purple Runtz készletek feltöltve. A mennyiség korlátozott.</div>
         </div>
         <div class="card">
             <div style="font-family:monospace; font-size:10px; color:var(--secondary);">2026.05.12 // 09:00</div>
@@ -167,6 +167,40 @@
             </div>
             
             <div class="card">
+                <h3 class="royal-text" style="margin-top: 0; font-size: 14px; color: var(--text);" data-i18n="tx_history">BEFIZETÉSI NAPLÓ</h3>
+                <div class="tx-row">
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: bold; color: #fff;">Feltöltés (SOL)</span>
+                        <span class="tx-date">2026.05.10 - 14:22</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="tx-amount">+ 0.45 SOL</span>
+                        <span class="tx-status" data-i18n="tx_success">SIKERES</span>
+                    </div>
+                </div>
+                <div class="tx-row">
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: bold; color: #fff;">Feltöltés (SOL)</span>
+                        <span class="tx-date">2026.05.01 - 09:15</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="tx-amount">+ 1.20 SOL</span>
+                        <span class="tx-status" data-i18n="tx_success">SIKERES</span>
+                    </div>
+                </div>
+                <div class="tx-row">
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: bold; color: #fff;">Feltöltés (SOL)</span>
+                        <span class="tx-date">2026.04.18 - 20:45</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="tx-amount">+ 0.15 SOL</span>
+                        <span class="tx-status" data-i18n="tx_success">SIKERES</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
                 <h3 class="royal-text" style="margin-top: 0; font-size: 14px; color: var(--text);" data-i18n="guide_title">Feltöltés Trust Wallet segítségével:</h3>
                 <div class="guide-step"><div class="step-num">1</div><div data-i18n="guide_1">Nyisd meg a Trust Wallet alkalmazást és válaszd ki a <b>Solana (SOL)</b> tokent.</div></div>
                 <div class="guide-step"><div class="step-num">2</div><div data-i18n="guide_2">Kattints a <b>Küldés (Send)</b> gombra.</div></div>
@@ -177,17 +211,10 @@
     </div>
 
     <div id="v-profile" class="view">
-        <div class="card" style="text-align: center; padding: 30px 15px;">
+        <div class="card" style="text-align: center; padding: 40px 15px;">
             <div style="font-size: 50px; margin-bottom: 10px;">👤</div>
             <h2 class="royal-text" id="username" style="margin: 0; color: var(--text);">GUEST_VIP</h2>
-            <div style="color: var(--primary); font-size: 12px; margin-top: 5px; font-weight: bold;">ROYAL COINS: <span id="coins">0</span></div>
-        </div>
-        <div class="card">
-            <div class="royal-text" style="margin-bottom: 10px; font-size: 14px; color: var(--primary);" data-i18n="gift_label">KUPON BEVÁLTÁSA</div>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="gift-in" placeholder="KÓD..." style="flex: 1; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif; outline: none;">
-                <button class="btn-action" onclick="redeem()">OK</button>
-            </div>
+            <div style="color: var(--muted); font-size: 11px; margin-top: 5px;">STATUS: <span style="color: var(--primary); font-weight: bold;">ACTIVE</span></div>
         </div>
     </div>
 
@@ -202,7 +229,6 @@
     <script>
         const tg = window.Telegram.WebApp;
         let userBalance = parseInt(localStorage.getItem('n_bal')) || 0;
-        let coins = parseInt(localStorage.getItem('n_coins')) || 0;
         let cart = [];
         let stocks = {};
         let currentLang = 'hu';
@@ -212,21 +238,21 @@
                 top_bal: "EGYENLEG", welcome_msg: "Üdvözlünk a legexkluzívabb hálózatban.", select_city: "VÁLASSZ RÉGIÓT",
                 news_1_t: "ÚJ SZÁLLÍTMÁNY: VIP ORGANIC", news_1_b: "A prémium minőségű LCG és Purple Runtz készletek feltöltve. A mennyiség korlátozott.",
                 news_2_t: "HÁLÓZAT STABILITÁS", news_2_b: "Budapest és Debrecen maximális kapacitással üzemel. Biztonságos, diszkrét célba juttatás.",
-                news_3_t: "🎁 ÜDVÖZLŐ BÓNUSZ", news_3_b: "Írd be a profilodnál a START2500 kódot, és azonnal jóváírunk 2500 Ft-ot a számládon!",
                 news_4_t: "SZEGED KARBANTARTÁS", news_4_b: "A szegedi régió ideiglenesen szünetel technikai fejlesztések miatt.",
-                cart_title: "KOSÁR TARTALMA", checkout: "MEGRENDELÉS LEADÁSA", wallet_bal: "JELENLEGI EGYENLEG", gift_label: "KUPON BEVÁLTÁSA",
+                cart_title: "KOSÁR TARTALMA", checkout: "MEGRENDELÉS LEADÁSA", wallet_bal: "JELENLEGI EGYENLEG",
                 nav_home: "Főoldal", nav_logs: "Hírek", nav_cart: "Kosár", nav_wallet: "Wallet", nav_profile: "Profil", btn_add: "KOSÁRBA HELYEZÉS", out: "ELFOGYOTT",
-                guide_title: "Feltöltés Trust Wallet segítségével:", guide_1: "Nyisd meg a Trust Wallet alkalmazást és válaszd ki a <b>Solana (SOL)</b> tokent.", guide_2: "Kattints a <b>Küldés (Send)</b> gombra.", guide_3: "Másold ki a fenti címet a 📋 ikonnal, és illeszd be a címzett mezőbe.", guide_4: "Add meg az összeget és hagyd jóvá a tranzakciót. A rendszer az aktuális árfolyamon váltja át forintra!"
+                guide_title: "Feltöltés Trust Wallet segítségével:", guide_1: "Nyisd meg a Trust Wallet alkalmazást és válaszd ki a <b>Solana (SOL)</b> tokent.", guide_2: "Kattints a <b>Küldés (Send)</b> gombra.", guide_3: "Másold ki a fenti címet a 📋 ikonnal, és illeszd be a címzett mezőbe.", guide_4: "Add meg az összeget és hagyd jóvá a tranzakciót. A rendszer az aktuális árfolyamon váltja át forintra!",
+                tx_history: "BEFIZETÉSI NAPLÓ", tx_success: "SIKERES"
             },
             en: {
                 top_bal: "BALANCE", welcome_msg: "Welcome to the most exclusive network.", select_city: "SELECT REGION",
                 news_1_t: "NEW BATCH: VIP ORGANIC", news_1_b: "Premium LCG and Purple Runtz stocks are refilled. Limited quantity.",
-                news_2_t: "NETWORK STABILITY", news_2_b: "Budapest and Debrecen are operating at max capacity. Safe and discret.",
-                news_3_t: "🎁 WELCOME BONUS", news_3_b: "Enter code START2500 in your profile for an instant 2500 HUF credit!",
+                news_2_t: "NETWORK STABILITY", news_2_b: "Budapest and Debrecen are operating at max capacity. Safe, discreet delivery.",
                 news_4_t: "SZEGED MAINTENANCE", news_4_b: "Szeged region is temporarily offline for technical upgrades.",
-                cart_title: "YOUR CART", checkout: "PLACE ORDER", wallet_bal: "CURRENT BALANCE", gift_label: "REDEEM COUPON",
+                cart_title: "YOUR CART", checkout: "PLACE ORDER", wallet_bal: "CURRENT BALANCE",
                 nav_home: "Home", nav_logs: "News", nav_cart: "Cart", nav_wallet: "Wallet", nav_profile: "Profile", btn_add: "ADD TO CART", out: "OUT OF STOCK",
-                guide_title: "How to deposit via Trust Wallet:", guide_1: "Open Trust Wallet and select the <b>Solana (SOL)</b> token.", guide_2: "Click on the <b>Send</b> button.", guide_3: "Copy the address above using the 📋 icon and paste it into the recipient field.", guide_4: "Enter the amount and confirm. The system will convert it to HUF at the current rate!"
+                guide_title: "How to deposit via Trust Wallet:", guide_1: "Open Trust Wallet and select the <b>Solana (SOL)</b> token.", guide_2: "Click on the <b>Send</b> button.", guide_3: "Copy the address above using the 📋 icon and paste it into the recipient field.", guide_4: "Enter the amount and confirm. The system will convert it to HUF at the current rate!",
+                tx_history: "TRANSACTION LOG", tx_success: "SUCCESS"
             }
         };
 
@@ -239,23 +265,26 @@
             { id: 6, name: "MDMA (2g)", price: 24000, img: "MDMA.png", type: "synthetic" }
         ];
 
-        // Teljesen randomizált raktárkészlet generálása
+        // Raktárkészlet generálása: Szeged üres, a többiben 1-2 termék direkt "Elfogyott" (0 db)
         function initStocks() {
             ['Budapest', 'Debrecen', 'Miskolc', 'Nyíregyháza', 'Szeged'].forEach(c => {
                 stocks[c] = {};
-                products.forEach(prod => {
-                    if (c === 'Szeged') {
-                        stocks[c][prod.id] = 0; // Szeged üres
-                    } else {
-                        // 60% eséllyel van a termék, ha van, akkor 1-10 darab között
-                        let exists = Math.random() > 0.4;
-                        stocks[c][prod.id] = exists ? Math.floor(Math.random() * 10) + 1 : 0;
+                if (c === 'Szeged') {
+                    products.forEach(p => stocks[c][p.id] = 0);
+                } else {
+                    // Először mindenből adunk 1-10 darabot
+                    products.forEach(p => stocks[c][p.id] = Math.floor(Math.random() * 10) + 1);
+                    
+                    // Kiválasztunk 1 vagy 2 random terméket, amit 0-ra teszünk (Elfogyott)
+                    let outOfStockCount = Math.floor(Math.random() * 2) + 1; // 1 vagy 2
+                    let shuffledProducts = [...products].sort(() => 0.5 - Math.random());
+                    for(let i=0; i<outOfStockCount; i++) {
+                        stocks[c][shuffledProducts[i].id] = 0;
                     }
-                });
+                }
             });
         }
 
-        // Solana Élő Árfolyam Lekérése
         async function fetchSolPrice() {
             const priceDisp = document.getElementById('sol-price-display');
             try {
@@ -306,7 +335,7 @@
                     <div class="prod-card">
                         <img src="${p.img}" class="prod-img">
                         <div class="prod-info">
-                            <div style="font-size:10px; color:${avail < 3 ? '#ff4d4d' : 'var(--secondary)'}; font-weight:bold;">${avail < 3 && avail > 0 ? '⚠️ UTOLSÓ DARABOK: ' : 'RAKTÁRON: '}${avail}</div>
+                            <div style="font-size:10px; color:${avail <= 0 ? '#ff4d4d' : 'var(--secondary)'}; font-weight:bold;">${avail <= 0 ? translations[currentLang].out : 'RAKTÁRON: ' + avail}</div>
                             <div style="font-weight:800; font-size:13px; margin:4px 0;">${p.name}</div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span style="color:var(--primary); font-weight:bold;">${p.price.toLocaleString()} HUF</span>
@@ -375,27 +404,15 @@
             tg.showAlert(currentLang === 'hu' ? "Tárcacím másolva!" : "Address copied!");
         }
 
-        function redeem() {
-            const val = document.getElementById('gift-in').value.toUpperCase();
-            if(val === 'START2500' && !localStorage.getItem('u_start')) {
-                userBalance += 2500; localStorage.setItem('n_bal', userBalance);
-                localStorage.setItem('u_start', 'true');
-                refreshDisplays(); tg.showAlert(currentLang === 'hu' ? "2500 HUF Jóváírva!" : "2500 HUF Added!");
-                document.getElementById('gift-in').value = '';
-            } else { tg.showAlert(currentLang === 'hu' ? "Érvénytelen vagy már használt kód." : "Invalid or used code."); }
-        }
-
         function refreshDisplays() {
             document.getElementById('top-bal').innerText = userBalance.toLocaleString() + " HUF";
             document.getElementById('wallet-bal-val').innerText = userBalance.toLocaleString() + " HUF";
-            document.getElementById('coins').innerText = coins;
         }
 
-        // Inicializálás
         initStocks();
         refreshDisplays();
         fetchSolPrice();
-        setInterval(fetchSolPrice, 60000); // Percenként frissíti az árfolyamot automatikusan
+        setInterval(fetchSolPrice, 60000); 
     </script>
 </body>
 </html>
