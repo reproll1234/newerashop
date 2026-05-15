@@ -24,7 +24,6 @@
         }
         h1, h2, h3, .royal-text { font-family: 'Cinzel', serif; }
 
-        /* HUD */
         .hud-top {
             padding: 15px 20px; background: rgba(11, 20, 38, 0.9); border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;
@@ -33,7 +32,6 @@
         .balance-box { border-left: 3px solid var(--primary); padding-left: 10px; }
         .balance-val { font-size: 18px; font-weight: bold; color: var(--primary); }
 
-        /* Navigation Dock */
         .dock {
             position: fixed; bottom: 0; left: 0; right: 0; background: rgba(5, 10, 20, 0.95);
             display: flex; justify-content: space-around; padding: 12px 0;
@@ -43,14 +41,11 @@
         .dock-item span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .dock-item.active { color: var(--primary); text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
 
-        /* Views */
         .view { display: none; padding: 20px 0; animation: fadeIn 0.4s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* UI Elements */
         .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin: 0 20px 15px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        
         .city-btn { background: linear-gradient(90deg, var(--panel) 0%, #050a14 100%); border: 1px solid var(--border); padding: 18px; border-radius: 12px; margin: 0 20px 10px; font-weight: bold; cursor: pointer; text-align: left; display: block; width: calc(100% - 40px); color: #fff; font-family: 'Poppins', sans-serif; letter-spacing: 1px; transition: 0.2s; border-left: 4px solid var(--primary); }
         .city-btn:active { background: var(--primary); color: #000; }
 
@@ -61,7 +56,6 @@
         .btn-action { background: var(--primary); color: #000; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; font-family: 'Poppins', sans-serif; }
         .btn-action:disabled { background: #222; color: #555; border: 1px solid #444; }
 
-        /* Premium Wallet Card */
         .premium-wallet { background: linear-gradient(135deg, #0b1426 0%, #050a14 100%); border: 1px solid var(--primary); padding: 25px; border-radius: 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15); position: relative; overflow: hidden; }
         .copy-area { background: rgba(0,0,0,0.6); border: 1px dashed var(--primary); padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 20px; }
         .copy-icon { font-size: 20px; cursor: pointer; color: var(--primary); }
@@ -69,15 +63,12 @@
         .spin { animation: spin 0.5s linear; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Lists & Transactions */
         .guide-step { display: flex; gap: 10px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
         .step-num { background: var(--primary); color: #000; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 10px; }
         
         .tx-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
-        .tx-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .tx-date { color: var(--muted); font-size: 10px; }
-        .tx-amount { color: var(--primary); font-weight: bold; font-family: monospace; font-size: 14px; }
-        .tx-status { color: var(--success); font-weight: bold; font-size: 10px; background: rgba(20, 241, 149, 0.1); padding: 3px 6px; border-radius: 4px; }
+        .tx-row:last-child { border-bottom: none; }
+        .tx-empty { text-align: center; color: var(--muted); padding: 20px 0; font-size: 12px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -168,36 +159,8 @@
             
             <div class="card">
                 <h3 class="royal-text" style="margin-top: 0; font-size: 14px; color: var(--text);" data-i18n="tx_history">BEFIZETÉSI NAPLÓ</h3>
-                <div class="tx-row">
-                    <div style="display: flex; flex-direction: column;">
-                        <span style="font-weight: bold; color: #fff;">Feltöltés (SOL)</span>
-                        <span class="tx-date">2026.05.10 - 14:22</span>
+                <div id="transaction-container">
                     </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span class="tx-amount">+ 0.45 SOL</span>
-                        <span class="tx-status" data-i18n="tx_success">SIKERES</span>
-                    </div>
-                </div>
-                <div class="tx-row">
-                    <div style="display: flex; flex-direction: column;">
-                        <span style="font-weight: bold; color: #fff;">Feltöltés (SOL)</span>
-                        <span class="tx-date">2026.05.01 - 09:15</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span class="tx-amount">+ 1.20 SOL</span>
-                        <span class="tx-status" data-i18n="tx_success">SIKERES</span>
-                    </div>
-                </div>
-                <div class="tx-row">
-                    <div style="display: flex; flex-direction: column;">
-                        <span style="font-weight: bold; color: #fff;">Feltöltés (SOL)</span>
-                        <span class="tx-date">2026.04.18 - 20:45</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span class="tx-amount">+ 0.15 SOL</span>
-                        <span class="tx-status" data-i18n="tx_success">SIKERES</span>
-                    </div>
-                </div>
             </div>
 
             <div class="card">
@@ -233,6 +196,11 @@
         let stocks = {};
         let currentLang = 'hu';
 
+        // Szimulált tranzakciók (Ha az egyenleg > 0, ide tehetünk példákat)
+        let transactions = userBalance > 0 ? [
+            { date: '2026.05.10 - 14:22', amount: '+ 0.45 SOL', status: 'SIKERES' }
+        ] : [];
+
         const translations = {
             hu: {
                 top_bal: "EGYENLEG", welcome_msg: "Üdvözlünk a legexkluzívabb hálózatban.", select_city: "VÁLASSZ RÉGIÓT",
@@ -242,7 +210,7 @@
                 cart_title: "KOSÁR TARTALMA", checkout: "MEGRENDELÉS LEADÁSA", wallet_bal: "JELENLEGI EGYENLEG",
                 nav_home: "Főoldal", nav_logs: "Hírek", nav_cart: "Kosár", nav_wallet: "Wallet", nav_profile: "Profil", btn_add: "KOSÁRBA HELYEZÉS", out: "ELFOGYOTT",
                 guide_title: "Feltöltés Trust Wallet segítségével:", guide_1: "Nyisd meg a Trust Wallet alkalmazást és válaszd ki a <b>Solana (SOL)</b> tokent.", guide_2: "Kattints a <b>Küldés (Send)</b> gombra.", guide_3: "Másold ki a fenti címet a 📋 ikonnal, és illeszd be a címzett mezőbe.", guide_4: "Add meg az összeget és hagyd jóvá a tranzakciót. A rendszer az aktuális árfolyamon váltja át forintra!",
-                tx_history: "BEFIZETÉSI NAPLÓ", tx_success: "SIKERES"
+                tx_history: "BEFIZETÉSI NAPLÓ", tx_success: "SIKERES", tx_none: "Nincs megjeleníthető tranzakció"
             },
             en: {
                 top_bal: "BALANCE", welcome_msg: "Welcome to the most exclusive network.", select_city: "SELECT REGION",
@@ -252,7 +220,7 @@
                 cart_title: "YOUR CART", checkout: "PLACE ORDER", wallet_bal: "CURRENT BALANCE",
                 nav_home: "Home", nav_logs: "News", nav_cart: "Cart", nav_wallet: "Wallet", nav_profile: "Profile", btn_add: "ADD TO CART", out: "OUT OF STOCK",
                 guide_title: "How to deposit via Trust Wallet:", guide_1: "Open Trust Wallet and select the <b>Solana (SOL)</b> token.", guide_2: "Click on the <b>Send</b> button.", guide_3: "Copy the address above using the 📋 icon and paste it into the recipient field.", guide_4: "Enter the amount and confirm. The system will convert it to HUF at the current rate!",
-                tx_history: "TRANSACTION LOG", tx_success: "SUCCESS"
+                tx_history: "TRANSACTION LOG", tx_success: "SUCCESS", tx_none: "No transactions to display"
             }
         };
 
@@ -265,24 +233,44 @@
             { id: 6, name: "MDMA (2g)", price: 24000, img: "MDMA.png", type: "synthetic" }
         ];
 
-        // Raktárkészlet generálása: Szeged üres, a többiben 1-2 termék direkt "Elfogyott" (0 db)
         function initStocks() {
             ['Budapest', 'Debrecen', 'Miskolc', 'Nyíregyháza', 'Szeged'].forEach(c => {
                 stocks[c] = {};
                 if (c === 'Szeged') {
                     products.forEach(p => stocks[c][p.id] = 0);
                 } else {
-                    // Először mindenből adunk 1-10 darabot
                     products.forEach(p => stocks[c][p.id] = Math.floor(Math.random() * 10) + 1);
-                    
-                    // Kiválasztunk 1 vagy 2 random terméket, amit 0-ra teszünk (Elfogyott)
-                    let outOfStockCount = Math.floor(Math.random() * 2) + 1; // 1 vagy 2
+                    let outOfStockCount = Math.floor(Math.random() * 2) + 1;
                     let shuffledProducts = [...products].sort(() => 0.5 - Math.random());
                     for(let i=0; i<outOfStockCount; i++) {
                         stocks[c][shuffledProducts[i].id] = 0;
                     }
                 }
             });
+        }
+
+        function renderTransactions() {
+            const container = document.getElementById('transaction-container');
+            if (transactions.length === 0) {
+                container.innerHTML = `<div class="tx-empty">${translations[currentLang].tx_none}</div>`;
+            } else {
+                container.innerHTML = '';
+                transactions.forEach(tx => {
+                    const row = document.createElement('div');
+                    row.className = 'tx-row';
+                    row.innerHTML = `
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-weight: bold; color: #fff;">Feltöltés (SOL)</span>
+                            <span style="color: var(--muted); font-size: 10px;">${tx.date}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: var(--primary); font-weight: bold; font-family: monospace; font-size: 14px;">${tx.amount}</span>
+                            <span style="color: var(--success); font-weight: bold; font-size: 10px; background: rgba(20, 241, 149, 0.1); padding: 3px 6px; border-radius: 4px;">${tx.status}</span>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
         }
 
         async function fetchSolPrice() {
@@ -314,6 +302,7 @@
             const city = document.getElementById('active-city').innerText;
             if(city !== 'RÉGIÓ' && city !== 'REGION') renderShop(city);
             if(document.getElementById('v-cart').classList.contains('active')) renderCart();
+            renderTransactions();
             updateBadge();
         }
 
@@ -326,7 +315,6 @@
         function renderShop(city) {
             const cont = document.getElementById('product-list');
             cont.innerHTML = '';
-            
             const createSection = (title, type) => {
                 let h = `<div class="royal-text" style="padding:10px 20px; font-size:12px; color:var(--muted); text-transform:uppercase;">${title}</div>`;
                 products.filter(p => p.type === type).forEach(p => {
@@ -396,6 +384,7 @@
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(id === 'v-cart') renderCart();
+            if(id === 'v-wallet') renderTransactions();
         }
 
         function copyWallet() {
