@@ -159,8 +159,7 @@
             
             <div class="card">
                 <h3 class="royal-text" style="margin-top: 0; font-size: 14px; color: var(--text);" data-i18n="tx_history">BEFIZETÉSI NAPLÓ</h3>
-                <div id="transaction-container">
-                    </div>
+                <div id="transaction-container"></div>
             </div>
 
             <div class="card">
@@ -176,7 +175,7 @@
     <div id="v-profile" class="view">
         <div class="card" style="text-align: center; padding: 40px 15px;">
             <div style="font-size: 50px; margin-bottom: 10px;">👤</div>
-            <h2 class="royal-text" id="username" style="margin: 0; color: var(--text);">GUEST_VIP</h2>
+            <h2 class="royal-text" id="username-display" style="margin: 0; color: var(--text);">GUEST_VIP</h2>
             <div style="color: var(--muted); font-size: 11px; margin-top: 5px;">STATUS: <span style="color: var(--primary); font-weight: bold;">ACTIVE</span></div>
         </div>
     </div>
@@ -191,12 +190,14 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.expand();
+        
         let userBalance = parseInt(localStorage.getItem('n_bal')) || 0;
         let cart = [];
         let stocks = {};
         let currentLang = 'hu';
 
-        // Szimulált tranzakciók (Ha az egyenleg > 0, ide tehetünk példákat)
+        // Tranzakciók szimulálása
         let transactions = userBalance > 0 ? [
             { date: '2026.05.10 - 14:22', amount: '+ 0.45 SOL', status: 'SIKERES' }
         ] : [];
@@ -396,6 +397,13 @@
         function refreshDisplays() {
             document.getElementById('top-bal').innerText = userBalance.toLocaleString() + " HUF";
             document.getElementById('wallet-bal-val').innerText = userBalance.toLocaleString() + " HUF";
+            
+            // FELHASZNÁLÓNÉV BEÁLLÍTÁSA A TELEGRAMBÓL
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                const nameDisplay = user.username ? `@${user.username}` : user.first_name;
+                document.getElementById('username-display').innerText = nameDisplay;
+            }
         }
 
         initStocks();
