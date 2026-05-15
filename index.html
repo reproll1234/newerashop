@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROYAL PLUG</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050a14; /* Sötétkék háttér */
+            --panel: #0b1426; /* Világosabb kék panelek */
+            --primary: #d4af37; /* Királykék / Arany - Fő arany */
+            --secondary: #4da6ff; /* Világoskék kiemelés */
+            --gold-bright: #ffd700;
+            --text: #ffffff; --muted: #8a9bb8; 
+            --border: rgba(212, 175, 55, 0.3); /* Arany keret */
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: var(--bg); color: var(--text);
+            font-family: 'Poppins', sans-serif; margin: 0; padding-bottom: 100px;
+        }
+        h1, h2, h3, .royal-text { font-family: 'Cinzel', serif; }
+
+        /* HUD */
+        .hud-top {
+            padding: 15px 20px; background: rgba(11, 20, 38, 0.9); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .balance-box { border-left: 3px solid var(--primary); padding-left: 10px; }
+        .balance-val { font-size: 18px; font-weight: bold; color: var(--primary); }
+
+        /* Navigation Dock */
+        .dock {
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(5, 10, 20, 0.95);
+            display: flex; justify-content: space-around; padding: 12px 0;
+            border-top: 1px solid var(--border); z-index: 2000; backdrop-filter: blur(15px);
+        }
+        .dock-item { color: var(--muted); font-size: 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+        .dock-item span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .dock-item.active { color: var(--primary); text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+
+        /* Views */
+        .view { display: none; padding: 20px 0; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* UI Elements */
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin: 0 20px 15px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        
+        .city-btn { background: linear-gradient(90deg, var(--panel) 0%, #050a14 100%); border: 1px solid var(--border); padding: 18px; border-radius: 12px; margin: 0 20px 10px; font-weight: bold; cursor: pointer; text-align: left; display: block; width: calc(100% - 40px); color: #fff; font-family: 'Poppins', sans-serif; letter-spacing: 1px; transition: 0.2s; border-left: 4px solid var(--primary); }
+        .city-btn:active { background: var(--primary); color: #000; }
+
+        .prod-card { background: var(--panel); border: 1px solid var(--border); margin: 0 20px 12px; border-radius: 15px; display: flex; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .prod-img { width: 100px; height: 100px; object-fit: cover; border-right: 1px solid var(--border); }
+        .prod-info { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+        .btn-action { background: var(--primary); color: #000; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; font-family: 'Poppins', sans-serif; }
+        .btn-action:disabled { background: #222; color: #555; border: 1px solid #444; }
+
+        /* Premium Wallet Card */
+        .premium-wallet { background: linear-gradient(135deg, #0b1426 0%, #050a14 100%); border: 1px solid var(--primary); padding: 25px; border-radius: 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15); position: relative; overflow: hidden; }
+        .premium-wallet::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 60%); pointer-events: none; }
+        .copy-area { background: rgba(0,0,0,0.6); border: 1px dashed var(--primary); padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 20px; }
+        .copy-icon { font-size: 20px; cursor: pointer; color: var(--primary); }
+        
+        /* Spin animation for refresh button */
+        .spin { animation: spin 0.5s linear; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Trust Wallet Guide */
+        .guide-step { display: flex; gap: 10px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
+        .step-num { background: var(--primary); color: #000; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="hud-top">
+        <div class="balance-box">
+            <div style="font-size: 9px; color: var(--muted);" data-i18n="top_bal">EGYENLEG</div>
+            <div class="balance-val" id="top-bal">0 HUF</div>
+        </div>
+        <button onclick="toggleLang()" style="background:rgba(212,175,55,0.1); border:1px solid var(--primary); color:var(--primary); border-radius:4px; padding:4px 8px; font-weight:bold; font-size:10px; cursor:pointer;" id="lang-btn">EN</button>
+    </div>
+
+    <div id="v-home" class="view active">
+        <div style="text-align: center; margin-bottom: 30px; padding-top: 10px;">
+            <div style="font-size: 50px; line-height: 1; margin-bottom: -5px; text-shadow: 0 0 20px rgba(212,175,55,0.5);">👑</div>
+            <h1 class="royal-text" style="letter-spacing: 4px; margin: 0; font-size: 28px; color: var(--primary);">ROYAL PLUG</h1>
+            <div style="color: var(--muted); font-size: 12px; margin-top: 5px;" data-i18n="welcome_msg">Üdvözlünk a legexkluzívabb hálózatban.</div>
+        </div>
+        
+        <div style="padding: 0 20px; margin-bottom: 15px;">
+            <h3 class="royal-text" style="margin: 0; color: var(--text); letter-spacing: 1px;" data-i18n="select_city">VÁLASSZ RÉGIÓT</h3>
+        </div>
+        <button class="city-btn" onclick="openShop('Budapest')">BUDAPEST</button>
+        <button class="city-btn" onclick="openShop('Debrecen')">DEBRECEN</button>
+        <button class="city-btn" onclick="openShop('Miskolc')">MISKOLC</button>
+        <button class="city-btn" onclick="openShop('Nyíregyháza')">NYÍREGYHÁZA</button>
+        <button class="city-btn" onclick="openShop('Szeged')">SZEGED</button>
+    </div>
+
+    <div id="v-logs" class="view">
+        <div class="card" style="border-left: 3px solid var(--primary); background: linear-gradient(90deg, rgba(212,175,55,0.1) 0%, var(--panel) 100%);">
+            <div style="font-family:monospace; font-size:10px; color:var(--secondary);">2026.05.15 // 14:00</div>
+            <div style="font-weight:bold; margin:5px 0; color: var(--primary);" data-i18n="news_3_t">🎁 ÜDVÖZLŐ BÓNUSZ</div>
+            <div style="font-size:12px; color:var(--text);" data-i18n="news_3_b">Írd be a profilodnál a START2500 kódot, és azonnal jóváírunk 2500 Ft-ot a számládon!</div>
+        </div>
+        <div class="card">
+            <div style="font-family:monospace; font-size:10px; color:var(--secondary);">2026.05.14 // 10:30</div>
+            <div style="font-weight:bold; margin:5px 0;" data-i18n="news_1_t">ÚJ SZÁLLÍTMÁNY: VIP ORGANIC</div>
+            <div style="font-size:12px; color:var(--muted);" data-i18n="news_1_b">A prémium minőségű LCG és Purple Runtz készletek feltöltve. A mennyiség korlátozott.</div>
+        </div>
+        <div class="card">
+            <div style="font-family:monospace; font-size:10px; color:var(--secondary);">2026.05.12 // 09:00</div>
+            <div style="font-weight:bold; margin:5px 0;" data-i18n="news_2_t">HÁLÓZAT STABILITÁS</div>
+            <div style="font-size:12px; color:var(--muted);" data-i18n="news_2_b">Budapest és Debrecen maximális kapacitással üzemel. Biztonságos, diszkrét célba juttatás.</div>
+        </div>
+        <div class="card">
+            <div style="font-family:monospace; font-size:10px; color:var(--secondary);">2026.05.10 // 16:45</div>
+            <div style="font-weight:bold; margin:5px 0;" data-i18n="news_4_t">SZEGED KARBANTARTÁS</div>
+            <div style="font-size:12px; color:var(--muted);" data-i18n="news_4_b">A szegedi régió ideiglenesen szünetel technikai fejlesztések miatt.</div>
+        </div>
+    </div>
+
+    <div id="v-shop" class="view">
+        <div style="padding: 0 20px 15px; display: flex; justify-content: space-between; align-items: center;">
+            <span onclick="showTab('v-home')" style="color: var(--primary); font-weight: bold; cursor: pointer; font-size: 14px;">← VISSZA</span>
+            <span id="active-city" class="royal-text" style="font-weight: bold; color: var(--text); font-size: 16px; letter-spacing: 1px;">RÉGIÓ</span>
+        </div>
+        <div id="product-list"></div>
+    </div>
+
+    <div id="v-cart" class="view">
+        <div class="card">
+            <h3 class="royal-text" style="margin-top: 0; color: var(--primary);" data-i18n="cart_title">KOSÁR TARTALMA</h3>
+            <div id="cart-items"></div>
+            <div id="cart-total-area" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px; display: none;">
+                <div style="text-align: right; font-size: 22px; font-weight: bold; color: var(--primary);" id="total-price">0 HUF</div>
+                <button class="btn-action" style="width: 100%; margin-top: 15px; padding: 15px; font-size: 13px;" data-i18n="checkout">MEGRENDELÉS LEADÁSA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="v-wallet" class="view">
+        <div style="padding: 0 20px;">
+            <div class="premium-wallet">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="royal-text" style="font-size: 20px; font-weight: bold; color: var(--primary);">WALLET</span>
+                    <span id="sol-price-display" style="font-size: 11px; color: var(--secondary); background: rgba(77, 166, 255, 0.1); padding: 4px 8px; border-radius: 4px;">SOL = FRISSÍTÉS...</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 25px;">
+                    <div>
+                        <div style="font-size: 10px; color: var(--muted); text-transform: uppercase;" data-i18n="wallet_bal">JELENLEGI EGYENLEG</div>
+                        <div style="font-size: 32px; font-weight: 800; color: #fff;" id="wallet-bal-val">0 HUF</div>
+                    </div>
+                    <button id="refresh-btn" onclick="refreshWalletData()" style="background: var(--primary); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; box-shadow: 0 0 10px rgba(212,175,55,0.4); display: flex; align-items: center; justify-content: center;">🔄</button>
+                </div>
+
+                <div class="copy-area">
+                    <span id="sol-addr" style="font-family: monospace; font-size: 10px; word-break: break-all; color: var(--muted);">8ryM6A9nG6iNMW5jBaUkdZ1nf2mZ3pAyNnp2DWoizryj</span>
+                    <span class="copy-icon" onclick="copyWallet()">📋</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="royal-text" style="margin-top: 0; font-size: 14px; color: var(--text);" data-i18n="guide_title">Feltöltés Trust Wallet segítségével:</h3>
+                <div class="guide-step"><div class="step-num">1</div><div data-i18n="guide_1">Nyisd meg a Trust Wallet alkalmazást és válaszd ki a <b>Solana (SOL)</b> tokent.</div></div>
+                <div class="guide-step"><div class="step-num">2</div><div data-i18n="guide_2">Kattints a <b>Küldés (Send)</b> gombra.</div></div>
+                <div class="guide-step"><div class="step-num">3</div><div data-i18n="guide_3">Másold ki a fenti címet a 📋 ikonnal, és illeszd be a címzett mezőbe.</div></div>
+                <div class="guide-step"><div class="step-num">4</div><div data-i18n="guide_4">Add meg az összeget és hagyd jóvá a tranzakciót. A rendszer az aktuális árfolyamon váltja át forintra!</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="v-profile" class="view">
+        <div class="card" style="text-align: center; padding: 30px 15px;">
+            <div style="font-size: 50px; margin-bottom: 10px;">👤</div>
+            <h2 class="royal-text" id="username" style="margin: 0; color: var(--text);">GUEST_VIP</h2>
+            <div style="color: var(--primary); font-size: 12px; margin-top: 5px; font-weight: bold;">ROYAL COINS: <span id="coins">0</span></div>
+        </div>
+        <div class="card">
+            <div class="royal-text" style="margin-bottom: 10px; font-size: 14px; color: var(--primary);" data-i18n="gift_label">KUPON BEVÁLTÁSA</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="gift-in" placeholder="KÓD..." style="flex: 1; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif; outline: none;">
+                <button class="btn-action" onclick="redeem()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dock">
+        <div class="dock-item active" onclick="nav('v-home', this)">👑<span data-i18n="nav_home">Home</span></div>
+        <div class="dock-item" onclick="nav('v-logs', this)">📜<span data-i18n="nav_logs">Hírek</span></div>
+        <div class="dock-item" onclick="nav('v-cart', this)">🛒<span id="cart-badge" data-i18n="nav_cart">Kosár</span></div>
+        <div class="dock-item" onclick="nav('v-wallet', this)">💎<span data-i18n="nav_wallet">Wallet</span></div>
+        <div class="dock-item" onclick="nav('v-profile', this)">⚜️<span data-i18n="nav_profile">Profil</span></div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        let userBalance = parseInt(localStorage.getItem('n_bal')) || 0;
+        let coins = parseInt(localStorage.getItem('n_coins')) || 0;
+        let cart = [];
+        let stocks = {};
+        let currentLang = 'hu';
+
+        const translations = {
+            hu: {
+                top_bal: "EGYENLEG", welcome_msg: "Üdvözlünk a legexkluzívabb hálózatban.", select_city: "VÁLASSZ RÉGIÓT",
+                news_1_t: "ÚJ SZÁLLÍTMÁNY: VIP ORGANIC", news_1_b: "A prémium minőségű LCG és Purple Runtz készletek feltöltve. A mennyiség korlátozott.",
+                news_2_t: "HÁLÓZAT STABILITÁS", news_2_b: "Budapest és Debrecen maximális kapacitással üzemel. Biztonságos, diszkrét célba juttatás.",
+                news_3_t: "🎁 ÜDVÖZLŐ BÓNUSZ", news_3_b: "Írd be a profilodnál a START2500 kódot, és azonnal jóváírunk 2500 Ft-ot a számládon!",
+                news_4_t: "SZEGED KARBANTARTÁS", news_4_b: "A szegedi régió ideiglenesen szünetel technikai fejlesztések miatt.",
+                cart_title: "KOSÁR TARTALMA", checkout: "MEGRENDELÉS LEADÁSA", wallet_bal: "JELENLEGI EGYENLEG", gift_label: "KUPON BEVÁLTÁSA",
+                nav_home: "Főoldal", nav_logs: "Hírek", nav_cart: "Kosár", nav_wallet: "Wallet", nav_profile: "Profil", btn_add: "KOSÁRBA HELYEZÉS", out: "ELFOGYOTT",
+                guide_title: "Feltöltés Trust Wallet segítségével:", guide_1: "Nyisd meg a Trust Wallet alkalmazást és válaszd ki a <b>Solana (SOL)</b> tokent.", guide_2: "Kattints a <b>Küldés (Send)</b> gombra.", guide_3: "Másold ki a fenti címet a 📋 ikonnal, és illeszd be a címzett mezőbe.", guide_4: "Add meg az összeget és hagyd jóvá a tranzakciót. A rendszer az aktuális árfolyamon váltja át forintra!"
+            },
+            en: {
+                top_bal: "BALANCE", welcome_msg: "Welcome to the most exclusive network.", select_city: "SELECT REGION",
+                news_1_t: "NEW BATCH: VIP ORGANIC", news_1_b: "Premium LCG and Purple Runtz stocks are refilled. Limited quantity.",
+                news_2_t: "NETWORK STABILITY", news_2_b: "Budapest and Debrecen are operating at max capacity. Safe and discret.",
+                news_3_t: "🎁 WELCOME BONUS", news_3_b: "Enter code START2500 in your profile for an instant 2500 HUF credit!",
+                news_4_t: "SZEGED MAINTENANCE", news_4_b: "Szeged region is temporarily offline for technical upgrades.",
+                cart_title: "YOUR CART", checkout: "PLACE ORDER", wallet_bal: "CURRENT BALANCE", gift_label: "REDEEM COUPON",
+                nav_home: "Home", nav_logs: "News", nav_cart: "Cart", nav_wallet: "Wallet", nav_profile: "Profile", btn_add: "ADD TO CART", out: "OUT OF STOCK",
+                guide_title: "How to deposit via Trust Wallet:", guide_1: "Open Trust Wallet and select the <b>Solana (SOL)</b> token.", guide_2: "Click on the <b>Send</b> button.", guide_3: "Copy the address above using the 📋 icon and paste it into the recipient field.", guide_4: "Enter the amount and confirm. The system will convert it to HUF at the current rate!"
+            }
+        };
+
+        const products = [
+            { id: 1, name: "LCG 17 (3g)", price: 21500, img: "LCG.jpg", type: "organic" },
+            { id: 2, name: "Purple Runtz (3g)", price: 24000, img: "Purple.avif", type: "organic" },
+            { id: 3, name: "Cocaine (1g)", price: 50000, img: "Coke.jpg", type: "synthetic" },
+            { id: 4, name: "XTC (280MG)", price: 15500, img: "Xtc.jpg", type: "synthetic" },
+            { id: 5, name: "Mephedron (2g)", price: 34000, img: "Meph.jpeg", type: "synthetic" },
+            { id: 6, name: "MDMA (2g)", price: 24000, img: "MDMA.png", type: "synthetic" }
+        ];
+
+        // Teljesen randomizált raktárkészlet generálása
+        function initStocks() {
+            ['Budapest', 'Debrecen', 'Miskolc', 'Nyíregyháza', 'Szeged'].forEach(c => {
+                stocks[c] = {};
+                products.forEach(prod => {
+                    if (c === 'Szeged') {
+                        stocks[c][prod.id] = 0; // Szeged üres
+                    } else {
+                        // 60% eséllyel van a termék, ha van, akkor 1-10 darab között
+                        let exists = Math.random() > 0.4;
+                        stocks[c][prod.id] = exists ? Math.floor(Math.random() * 10) + 1 : 0;
+                    }
+                });
+            });
+        }
+
+        // Solana Élő Árfolyam Lekérése
+        async function fetchSolPrice() {
+            const priceDisp = document.getElementById('sol-price-display');
+            try {
+                let res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=huf');
+                let data = await res.json();
+                priceDisp.innerText = `1 SOL = ${data.solana.huf.toLocaleString()} HUF`;
+            } catch (e) {
+                priceDisp.innerText = `1 SOL = ~60,000 HUF (Est.)`;
+            }
+        }
+
+        function refreshWalletData() {
+            const btn = document.getElementById('refresh-btn');
+            btn.classList.add('spin');
+            fetchSolPrice();
+            refreshDisplays();
+            setTimeout(() => { btn.classList.remove('spin'); tg.HapticFeedback.impactOccurred('light'); }, 500);
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'hu' ? 'en' : 'hu';
+            document.getElementById('lang-btn').innerText = currentLang === 'hu' ? 'EN' : 'HU';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.innerHTML = translations[currentLang][key] || el.innerHTML;
+            });
+            const city = document.getElementById('active-city').innerText;
+            if(city !== 'RÉGIÓ' && city !== 'REGION') renderShop(city);
+            if(document.getElementById('v-cart').classList.contains('active')) renderCart();
+            updateBadge();
+        }
+
+        function openShop(city) {
+            document.getElementById('active-city').innerText = city;
+            renderShop(city);
+            showTab('v-shop');
+        }
+
+        function renderShop(city) {
+            const cont = document.getElementById('product-list');
+            cont.innerHTML = '';
+            
+            const createSection = (title, type) => {
+                let h = `<div class="royal-text" style="padding:10px 20px; font-size:12px; color:var(--muted); text-transform:uppercase;">${title}</div>`;
+                products.filter(p => p.type === type).forEach(p => {
+                    const avail = stocks[city][p.id] - cart.filter(c => c.id === p.id && c.city === city).length;
+                    h += `
+                    <div class="prod-card">
+                        <img src="${p.img}" class="prod-img">
+                        <div class="prod-info">
+                            <div style="font-size:10px; color:${avail < 3 ? '#ff4d4d' : 'var(--secondary)'}; font-weight:bold;">${avail < 3 && avail > 0 ? '⚠️ UTOLSÓ DARABOK: ' : 'RAKTÁRON: '}${avail}</div>
+                            <div style="font-weight:800; font-size:13px; margin:4px 0;">${p.name}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:var(--primary); font-weight:bold;">${p.price.toLocaleString()} HUF</span>
+                                <button class="btn-action" ${avail <= 0 ? 'disabled' : ''} onclick="addToCart(${p.id}, '${city}')">
+                                    ${avail > 0 ? translations[currentLang].btn_add : translations[currentLang].out}
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                return h;
+            };
+            cont.innerHTML = createSection('Organic', 'organic') + createSection('Synthetic', 'synthetic');
+        }
+
+        function addToCart(id, city) {
+            const prod = products.find(p => p.id === id);
+            cart.push({ ...prod, city });
+            tg.HapticFeedback.impactOccurred('medium');
+            updateBadge();
+            renderShop(city);
+        }
+
+        function updateBadge() {
+            const badge = document.getElementById('cart-badge');
+            const cartText = translations[currentLang].nav_cart;
+            badge.innerText = cart.length > 0 ? `${cartText} (${cart.length})` : cartText;
+        }
+
+        function renderCart() {
+            const cont = document.getElementById('cart-items');
+            const footer = document.getElementById('cart-total-area');
+            if(cart.length === 0) {
+                cont.innerHTML = `<p style="text-align:center; color:var(--muted); padding:20px;">${currentLang === 'hu' ? 'A kosár üres.' : 'Cart is empty.'}</p>`;
+                footer.style.display = 'none'; return;
+            }
+            footer.style.display = 'block'; cont.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                const div = document.createElement('div');
+                div.style.cssText = "display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); font-size:13px;";
+                div.innerHTML = `<span><b>${item.name}</b> <span style="color:var(--muted); font-size:10px;">(${item.city})</span></span> <span style="font-weight:bold;">${item.price.toLocaleString()} HUF <span onclick="remove(${index})" style="color:#ff4d4d; margin-left:10px; cursor:pointer; font-size:16px;">×</span></span>`;
+                cont.appendChild(div);
+            });
+            document.getElementById('total-price').innerText = total.toLocaleString() + " HUF";
+        }
+
+        function remove(idx) { cart.splice(idx, 1); renderCart(); updateBadge(); }
+
+        function nav(viewId, el) {
+            document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            showTab(viewId);
+        }
+
+        function showTab(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'v-cart') renderCart();
+        }
+
+        function copyWallet() {
+            const addr = document.getElementById('sol-addr').innerText;
+            navigator.clipboard.writeText(addr);
+            tg.showAlert(currentLang === 'hu' ? "Tárcacím másolva!" : "Address copied!");
+        }
+
+        function redeem() {
+            const val = document.getElementById('gift-in').value.toUpperCase();
+            if(val === 'START2500' && !localStorage.getItem('u_start')) {
+                userBalance += 2500; localStorage.setItem('n_bal', userBalance);
+                localStorage.setItem('u_start', 'true');
+                refreshDisplays(); tg.showAlert(currentLang === 'hu' ? "2500 HUF Jóváírva!" : "2500 HUF Added!");
+                document.getElementById('gift-in').value = '';
+            } else { tg.showAlert(currentLang === 'hu' ? "Érvénytelen vagy már használt kód." : "Invalid or used code."); }
+        }
+
+        function refreshDisplays() {
+            document.getElementById('top-bal').innerText = userBalance.toLocaleString() + " HUF";
+            document.getElementById('wallet-bal-val').innerText = userBalance.toLocaleString() + " HUF";
+            document.getElementById('coins').innerText = coins;
+        }
+
+        // Inicializálás
+        initStocks();
+        refreshDisplays();
+        fetchSolPrice();
+        setInterval(fetchSolPrice, 60000); // Percenként frissíti az árfolyamot automatikusan
+    </script>
+</body>
+</html>
